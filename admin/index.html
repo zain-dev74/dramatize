@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dramatize Admin Login</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            <div id="message"></div>
+        </div>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>
+
+<!-- Add this video player structure where you want the video player -->
+<div class="video-player-container" style="display: none;" id="videoPlayerContainer">
+    <div class="video-player">
+        <video id="mainVideo" controls></video>
+        <div class="video-controls">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="controls-row">
+                <div class="controls-group">
+                    <button class="control-button play-pause-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-button skip-back-btn" title="Skip back 10 seconds">
+                        <i class="fas fa-backward"></i>
+                        <span style="font-size: 0.8em;">10</span>
+                    </button>
+                    <button class="control-button skip-forward-btn" title="Skip forward 10 seconds">
+                        <i class="fas fa-forward"></i>
+                        <span style="font-size: 0.8em;">10</span>
+                    </button>
+                    <input type="range" class="volume-control" min="0" max="1" step="0.1" value="1">
+                    <span class="time-display">0:00 / 0:00</span>
+                </div>
+                <div class="controls-group">
+                    <select class="quality-selector">
+                        <option value="1080p">1080p</option>
+                        <option value="720p">720p</option>
+                        <option value="480p">480p</option>
+                    </select>
+                    <select class="playback-rate-selector">
+                        <option value="0.5">0.5x</option>
+                        <option value="1" selected>1x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2">2x</option>
+                    </select>
+                    <button class="control-button lock-btn">
+                        <i class="fas fa-lock-open"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,4202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dramatize - Mobile Drama Streaming</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Stream your favorite Korean and Chinese dramas on Dramatize - the ultimate mobile drama streaming platform">
+    <meta name="theme-color" content="#ff6b9d">
+    <meta name="background-color" content="#0a0a0a">
+    
+    <!-- Open Graph Meta Tags for Search Results -->
+    <meta property="og:title" content="Dramatize - Mobile Drama Streaming">
+    <meta property="og:description" content="Stream your favorite Korean and Chinese dramas on Dramatize - the ultimate mobile drama streaming platform">
+    <meta property="og:image" content="https://dramatize.site/logo.png">
+    <meta property="og:url" content="https://dramatize.site">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Dramatize">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dramatize - Mobile Drama Streaming">
+    <meta name="twitter:description" content="Stream your favorite Korean and Chinese dramas on Dramatize - the ultimate mobile drama streaming platform">
+    <meta name="twitter:image" content="https://dramatize.site/logo.png">
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="author" content="Dramatize">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dramatize.site">
+    
+    <!-- Apple PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dramatize">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="logo.png">
+    
+    <!-- Microsoft PWA Meta Tags -->
+    <meta name="msapplication-TileImage" content="logo.png">
+    <meta name="msapplication-TileColor" content="#ff6b9d">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- Standard Meta Tags -->
+    <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="logo.png">
+    <link rel="mask-icon" href="logo.png" color="#ff6b9d">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* Chat Modal Styles */
+        .chat-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1500;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 350px;
+            position: relative;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .chat-close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .chat-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .chat-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .chat-link {
+            display: block;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .chat-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .messenger-btn {
+            background: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .messenger-btn:hover {
+            background: #0066cc;
+            transform: translateY(-1px);
+        }
+
+        .messenger-btn i {
+            font-size: 1.1rem;
+        }
+        :root {
+    --primary-bg: #0a0a0a;
+    --secondary-bg: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --accent-color: #ff6b9d;
+    --accent-secondary: #4ecdc4;
+    --border-color: #333333;
+    --hover-bg: #2a2a2a;
+    --shadow: 0 4px 20px rgba(0,0,0,0.3);
+    --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    
+    /* Typography improvements */
+    --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Spacing system */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+    
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+}
+
+[data-theme="light"] {
+    --primary-bg: #ffffff;
+    --secondary-bg: #f8f9fa;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --hover-bg: #f0f0f0;
+    --shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+        /* Light theme navigation fixes */
+        [data-theme="light"] .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        [data-theme="light"] .nav-links a {
+            color: #1a1a1a !important;
+            font-weight: 600;
+        }
+        
+        [data-theme="light"] .nav-links a:hover {
+            color: #ff6b9d !important;
+        }
+        
+        [data-theme="light"] .theme-toggle,
+        [data-theme="light"] .login-btn {
+            color: #1a1a1a;
+            border-color: #e0e0e0;
+        }
+        
+        [data-theme="light"] .search-input {
+            background: #f8f9fa;
+            border-color: #e0e0e0;
+            color: #1a1a1a;
+        }
+        
+        [data-theme="light"] .search-input::placeholder {
+            color: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--primary-bg);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+}
+
+        .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--spacing-md) var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+            margin-left: 2rem; /* Add margin from left border */
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-secondary);
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem; /* Increased margin to the right of search */
+        }
+
+        .search-input {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            width: 250px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            width: 300px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 2rem; /* Increased from 1rem to 2rem for more space */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem; /* Increased gap between theme toggle and login */
+            margin-left: 1.5rem; /* Increased margin to the left of theme toggle */
+            margin-right: 1rem; /* Add margin from right border */
+        }
+
+        .install-btn {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .install-btn:hover {
+            background: linear-gradient(135deg, #ff5582, #b73e56);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+        }
+
+        .theme-toggle, .login-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .login-btn {
+            border-radius: 20px;
+            width: auto;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+
+        .install-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+        }
+
+        .install-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle:hover, .login-btn:hover {
+            background: var(--hover-bg);
+        }
+
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1500;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .login-form label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+        }
+
+        .form-submit {
+            background: var(--accent-color);
+            color: var(--primary-bg);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .video-modal.show {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .video-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            max-height: calc(100vh - 40px);
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 2001;
+            margin: auto;
+        }
+
+        .video-header {
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 2002;
+        }
+
+        .video-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .episode-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .drama-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: block;
+            min-height: 1.5rem;
+            visibility: visible;
+            z-index: 2002;
+        }
+
+        .description-box {
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .description-toggle {
+            background: none;
+            border: none;
+            color: #e91e63;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .description-toggle:hover {
+            color: #c2185b;
+        }
+
+        .description-toggle i {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .description-toggle.expanded i {
+            transform: rotate(180deg);
+        }
+
+        .description-content {
+            max-height: 120px;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            color: #ffffff;
+            margin-top: 0.5rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .description-content:not(.expanded)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, var(--bg-color));
+            pointer-events: none;
+        }
+
+        .description-content.expanded {
+            max-height: 500px;
+        }
+
+        .description-content.expanded::after {
+            display: none;
+        }
+
+        /* Light theme support for description box */
+        [data-theme="light"] .description-toggle {
+            color: #e91e63;
+        }
+
+        [data-theme="light"] .description-toggle:hover {
+            color: #c2185b;
+        }
+
+        [data-theme="light"] .description-content {
+            color: #333333;
+        }
+
+        [data-theme="light"] .description-content:not(.expanded)::after {
+            background: linear-gradient(transparent, #ffffff);
+        }
+
+        .close-btn, .screen-lock-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 0.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+        }
+
+        .screen-lock-btn {
+            right: 3rem;
+        }
+
+        .close-btn:hover, .screen-lock-btn:hover {
+            background: var(--hover-bg);
+        }
+
+        .screen-locked {
+            background: var(--accent-color) !important;
+            color: var(--primary-bg) !important;
+        }
+
+        /* Locked player visual feedback */
+        .video-modal.player-locked .plyr__controls [data-plyr]:not([data-plyr="play"]) {
+            opacity: 0.3 !important;
+            pointer-events: none !important;
+        }
+
+        .video-modal.player-locked .plyr__controls [data-plyr="play"] {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .video-modal.player-locked .plyr__video-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.05);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #videoPlayer {
+            width: 100%;
+        }
+
+        /* Add fullscreen-specific styles */
+        .plyr--fullscreen #videoPlayer {
+            max-height: none !important;
+            height: 100vh !important;
+        }
+
+        .plyr__control--overlaid {
+            background: rgba(0, 0, 0, 0.7) !important;
+        }
+
+        .plyr__controls .plyr__control[data-plyr="rewind"],
+        .plyr__controls .plyr__control[data-plyr="fast-forward"] {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .plyr__controls .plyr__control[data-plyr="rewind"]:hover,
+        .plyr__controls .plyr__control[data-plyr="fast-forward"]:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .action-section {
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            z-index: 2002;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        .favorite-btn {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .favorite-btn.favorited {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .share-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .episode-section {
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-top: 1px solid var(--border-color);
+            min-height: 80px;
+            height: auto;
+            display: block !important;
+            visibility: visible !important;
+            overflow: visible !important;
+            z-index: 2002;
+        }
+
+        .episode-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .episode-count {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .episode-list {
+            display: flex !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 10px;
+            padding: 10px 20px;
+            scroll-behavior: smooth;
+            min-height: 60px;
+            height: auto;
+            align-items: center;
+            visibility: visible !important;
+            z-index: 2002;
+            white-space: nowrap;
+        }
+
+        .episode-list::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .episode-list::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .episode-list::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+
+        .episode-list::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Episode Bar Styles for Drama Cards */
+
+
+        .episode-item {
+            min-width: 64px;
+            height: 40px;
+            background: var(--primary-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .episode-item:hover {
+            background: var(--accent-color);
+            color: var(--primary-bg);
+            transform: translateY(-2px);
+        }
+
+        .episode-item.current {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--primary-bg);
+        }
+
+        .hero-section {
+            margin-top: 80px;
+            height: 60vh;
+            position: relative;
+            overflow: hidden;
+            background: var(--secondary-bg);
+        }
+        
+        /* Mobile hero section adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 50vh;
+                margin-top: 120px; /* Account for taller mobile navbar */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                height: 45vh;
+                margin-top: 140px;
+            }
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            font-size: 1.2rem;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-prev {
+            left: 20px;
+        }
+
+        .carousel-next {
+            right: 20px;
+        }
+
+        /* Hide navigation on mobile for better UX */
+        @media (max-width: 768px) {
+            .carousel-nav {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+                /* Ensure buttons stay within screen bounds */
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            
+            .carousel-prev {
+                left: 5px;
+                /* Prevent negative positioning */
+                margin-left: 0;
+            }
+            
+            .carousel-next {
+                right: 5px;
+                /* Prevent extending beyond right edge */
+                margin-right: 0;
+            }
+            
+            /* Additional safety for very small screens */
+            @media (max-width: 480px) {
+                .carousel-nav {
+                    width: 30px;
+                    height: 30px;
+                    font-size: 0.8rem;
+                }
+                
+                .carousel-prev {
+                    left: 2px;
+                }
+                
+                .carousel-next {
+                    right: 2px;
+                }
+            }
+            
+            /* Hide carousel navigation on very small screens if needed */
+            @media (max-width: 360px) {
+                .carousel-nav {
+                    display: none;
+                }
+            }
+        }
+
+        .hero-carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .hero-slide {
+            min-width: 100%;
+            position: relative;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
+        }
+        
+        /* Enhanced overlay for mobile text visibility */
+        @media (max-width: 768px) {
+            .hero-overlay {
+                background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(0,0,0,0.5));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-overlay {
+                background: linear-gradient(45deg, rgba(0,0,0,0.85), rgba(0,0,0,0.6));
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            line-height: 1.2;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            line-height: 1.4;
+        }
+        
+        /* Mobile hero content adjustments */
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 1.5rem;
+                max-width: 90%;
+            }
+            
+            .hero-title {
+                font-size: 2.2rem;
+                margin-bottom: 0.8rem;
+                text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            }
+            
+            .hero-description {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+                text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-content {
+                padding: 1rem;
+                max-width: 95%;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+                margin-bottom: 0.6rem;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.95);
+            }
+            
+            .hero-description {
+                font-size: 0.9rem;
+                margin-bottom: 1.2rem;
+                text-shadow: 1px 1px 6px rgba(0,0,0,0.95);
+            }
+        }
+
+        .hero-btn {
+            background: var(--accent-color);
+            color: var(--primary-bg);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .section {
+    padding: var(--spacing-xxl) var(--spacing-xl);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .drama-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    padding: 0;
+}
+
+        .drama-card {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        .drama-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .drama-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        /* Responsive thumbnail sizing */
+        @media (max-width: 768px) {
+            .drama-thumbnail {
+                height: 180px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .drama-thumbnail {
+                height: 160px;
+                border-radius: 8px 8px 0 0;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .drama-thumbnail {
+                height: 140px;
+            }
+        }
+
+        .drama-info {
+            padding: 1.5rem;
+        }
+
+        .drama-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .drama-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .drama-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        /* Episode Management Styles */
+        .drama-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-episodes, .btn-play {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-episodes:hover, .btn-play:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .episode-list {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .episode-list h4 {
+            margin: 0 0 1rem 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .episode-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--secondary-bg);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .episode-item:hover {
+            background: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .episode-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .episode-number {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 1rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .episode-info {
+            flex: 1;
+        }
+
+        .episode-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .episode-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .continue-watching {
+            background: var(--secondary-bg);
+        }
+
+        .continue-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .continue-item:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .continue-thumbnail {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .continue-info {
+            flex: 1;
+        }
+
+        .continue-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .continue-progress {
+            background: var(--border-color);
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .continue-progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .footer {
+    background: var(--secondary-bg);
+    padding: var(--spacing-xxl) var(--spacing-xl) var(--spacing-xl);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    margin-top: var(--spacing-xxl);
+}
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* PWA Safe Area Fixes */
+        @supports (padding: max(0px)) {
+            .navbar {
+                padding-top: max(1rem, env(safe-area-inset-top));
+                padding-left: max(2rem, env(safe-area-inset-left));
+                padding-right: max(2rem, env(safe-area-inset-right));
+            }
+            
+            .footer {
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+                padding-left: max(2rem, env(safe-area-inset-left));
+                padding-right: max(2rem, env(safe-area-inset-right));
+            }
+            
+            .main-content {
+                padding-bottom: max(2rem, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Install button mobile fixes */
+        @media (max-width: 768px) {
+            .install-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+                min-height: 44px;
+                margin-bottom: max(0.5rem, env(safe-area-inset-bottom));
+            }
+            
+            .nav-controls {
+                padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Prevent content from being hidden behind safe areas */
+        body {
+            padding-top: env(safe-area-inset-top);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .main-content {
+            margin-top: 80px; /* Account for fixed navbar */
+            min-height: calc(100vh - 80px - env(safe-area-inset-bottom));
+        }
+
+        @media (max-width: 768px) {
+    .navbar {
+        padding: var(--spacing-md);
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-links {
+        gap: var(--spacing-md);
+        font-size: 0.8rem;
+    }
+    
+    .section {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .drama-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .drama-info {
+        padding: var(--spacing-md);
+    }
+    
+    .drama-title {
+        font-size: 1rem;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    /* Install button improvements */
+    .install-btn {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: 0.9rem;
+        font-weight: var(--font-weight-semibold);
+        border-radius: var(--radius-xl);
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.8rem 1rem;
+        flex-wrap: wrap;
+        min-height: 80px;
+    }
+    
+    .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+        margin-left: 0; /* Reset margin on mobile */
+        gap: 1.5rem;
+    }
+    
+    .nav-controls {
+        gap: 0.8rem; /* Reduced gap for mobile */
+    }
+    
+    .nav-actions {
+        margin-left: 0.5rem; /* Reduced margin for mobile */
+        margin-right: 0.5rem;
+        gap: 0.8rem;
+    }
+    
+    .search-container {
+        margin-right: 0.8rem; /* Reduced margin for mobile */
+    }
+    
+    .search-input {
+        width: 180px;
+    }
+    
+    .search-input:focus {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.6rem 0.8rem;
+        flex-direction: column;
+        gap: 0.8rem;
+        min-height: 100px;
+    }
+    
+    .logo {
+        font-size: 1rem;
+    }
+
+    .nav-controls {
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .search-container {
+        margin-right: 0;
+        
+    }
+
+    .search-input {
+        width: 140px;
+        max-width: 140px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .search-input:focus {
+        width: 160px;
+        max-width: 145px;
+    }
+    
+    .nav-actions {
+        gap: 0.5rem;
+        margin-left: 0.5rem;
+    }
+    
+    .theme-toggle, .login-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+    
+    .login-btn {
+        padding: 0.4rem 0.8rem;
+        width: auto;
+        min-width: 25px;
+    }
+    
+    .install-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        min-height: 30px;
+    }
+}
+
+/* Landscape orientation for mobile devices */
+@media (max-height: 500px) and (orientation: landscape) {
+    .navbar {
+        padding: 0.4rem 0.8rem;
+        flex-direction: row;
+        gap: 0.5rem;
+        min-height: 60px;
+        flex-wrap: nowrap;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .nav-links {
+        order: 2;
+        width: auto;
+        margin-top: 0;
+        gap: 1rem;
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .nav-controls {
+        width: auto;
+        gap: 0.8rem;
+        order: 3;
+    }
+    
+    .search-input {
+        width: 120px;
+        max-width: 120px;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .search-input:focus {
+        width: 140px;
+        max-width: 140px;
+    }
+    
+    .nav-actions {
+        gap: 0.8rem;
+        margin-left: 0;
+    }
+    
+    .theme-toggle, .login-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+    
+    .login-btn {
+        padding: 0.3rem 0.6rem;
+        width: auto;
+        min-width: 50px;
+        font-size: 0.75rem;
+    }
+    
+    .install-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+        min-height: 32px;
+    }
+}
+
+            /* Enhanced mobile drama grid */
+            .drama-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                padding: 0 0.5rem;
+            }
+
+            .drama-card {
+                border-radius: 8px;
+                min-height: 280px;
+            }
+
+            .drama-info {
+                padding: 0.8rem;
+            }
+
+            .drama-title {
+                font-size: 0.95rem;
+                line-height: 1.3;
+                margin-bottom: 0.4rem;
+                font-weight: 600;
+            }
+
+            .drama-meta {
+                font-size: 0.75rem;
+                margin-bottom: 0.4rem;
+                opacity: 0.8;
+            }
+
+            .drama-description {
+                font-size: 0.75rem;
+                line-height: 1.4;
+            }
+            
+            /* Description content styles moved to main CSS section above */
+            
+            /* Episode bar mobile adjustments */
+            .episode-item {
+                min-width: 50px;
+                height: 32px;
+                font-size: 10px;
+            }
+            
+            .episode-list {
+                gap: 0.3rem;
+                padding: 0.5rem 0;
+            }
+
+            .continue-item {
+                flex-direction: column;
+            }
+
+            .continue-thumbnail {
+                width: 100%;
+                height: 150px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .video-container {
+                width: 95%;
+            }
+
+            #videoPlayer {
+                max-height: 40vh;
+            }
+
+            .episode-list {
+                padding: 0 10px;
+            }
+.hero-btn {
+    background: var(--accent-color);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+.hero-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+}
+
+.hero-btn i {
+    font-size: 1.2rem;
+}
+
+
+
+        /* Plyr.js fullscreen enhancements */
+        /* Fullscreen video handling */
+
+        /* Mobile video optimizations */
+        @media (max-width: 768px) {
+            .video-modal {
+                padding: 0;
+            }
+
+            .video-container {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .video-wrapper {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #000;
+            }
+
+            #videoPlayer {
+                width: 100%;
+                height: auto;
+                max-height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        /* Landscape orientation handling */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .video-container {
+                flex-direction: row;
+            }
+
+            .video-wrapper {
+                flex: 1;
+            }
+
+            .video-header,
+            .action-section,
+            .episode-section {
+                display: none;
+            }
+
+            #videoPlayer {
+                width: 100vw;
+                height: 100vh;
+                max-height: none;
+                object-fit: contain;
+            }
+        }
+
+        /* Fullscreen video fixes */
+        .video-modal.fullscreen {
+            background: #000 !important;
+        }
+        
+        .video-modal.fullscreen .video-container {
+            width: 100% !important;
+            max-width: none !important;
+            height: 100% !important;
+            border-radius: 0 !important;
+        }
+        
+        .video-modal.fullscreen #videoPlayer {
+            width: 100% !important;
+            height: 100vh !important;
+            max-height: none !important;
+            object-fit: contain;
+        }
+        
+        .video-modal.fullscreen .video-header,
+        .video-modal.fullscreen .action-section,
+        .video-modal.fullscreen .episode-section {
+            display: none !important;
+        }
+        
+        /* Standard video player sizing */
+        #videoPlayer {
+            width: 100%;
+            height: auto;
+            min-height: 300px;
+            max-height: 60vh;
+            background: #000;
+        }
+        
+        /* Plyr fullscreen support */
+        .plyr--fullscreen #videoPlayer {
+            width: 100% !important;
+            height: 100vh !important;
+            max-height: none !important;
+        }
+        
+        /* Additional Plyr fullscreen modal support */
+        .plyr--fullscreen .video-modal {
+            background: #000 !important;
+        }
+        
+        .plyr--fullscreen .video-header,
+        .plyr--fullscreen .action-section,
+        .plyr--fullscreen .episode-section {
+            display: none !important;
+        }
+
+        /* Mobile Plyr controls optimization */
+        @media (max-width: 768px) {
+            .plyr__controls {
+                padding: 8px 12px !important;
+                font-size: 14px !important;
+            }
+            
+            .plyr__time {
+                font-size: 12px !important;
+                min-width: auto !important;
+                padding: 0 4px !important;
+            }
+            
+            .plyr__progress {
+                margin: 0 8px !important;
+            }
+            
+            .plyr__control {
+                padding: 6px !important;
+                margin: 0 2px !important;
+            }
+            
+            .plyr__control svg {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            
+            .plyr__volume {
+                max-width: 60px !important;
+            }
+        }
+        
+        /* Extra small mobile devices */
+        @media (max-width: 480px) {
+            .plyr__controls {
+                padding: 6px 8px !important;
+                font-size: 12px !important;
+            }
+            
+            .plyr__time {
+                font-size: 10px !important;
+                margin-left: 5px !important;
+            }
+            
+            .plyr__progress {
+                margin: 0 6px !important;
+            }
+            
+            .plyr__control {
+                padding: 4px !important;
+                margin: 0 1px !important;
+            }
+            
+            .plyr__control svg {
+                width: 14px !important;
+                height: 14px !important;
+            }
+            
+            .plyr__volume {
+                max-width: 90px !important;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .plyr__volume {
+                max-width: 30px !important;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .plyr__volume input[type="range"] {
+                display: none !important;
+            }
+            
+            .plyr__volume {
+                max-width: 30px !important;
+                min-width: 30px !important;
+            }
+        }
+
+        .mobile-volume-popup {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 12px 20px;
+            border-radius: 25px;
+            z-index: 9999;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+            min-width: 145px;
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+        }
+
+        @media (min-width: 361px) {
+            .mobile-volume-popup {
+                display: none !important;
+                visibility: hidden !important;
+            }
+        }
+
+        .mobile-volume-popup.show {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideUp 0.2s ease;
+            pointer-events: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mobile-volume-slider {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .mobile-volume-slider-fill {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 2px;
+            width: 100%;
+            position: relative;
+        }
+
+        .mobile-volume-slider-thumb {
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-volume-icon {
+            color: white;
+            font-size: 14px;
+        }
+
+        .mobile-volume-popup::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 70px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid rgba(0, 0, 0, 0.95);
+        }
+
+        /* Additional mobile optimizations */
+@media (max-width: 360px) {
+    .drama-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+        padding: 0 0.3rem;
+    }
+    
+    .drama-card {
+        min-height: 260px;
+    }
+    
+    .drama-info {
+        padding: 0.6rem;
+    }
+    
+    .drama-title {
+        font-size: 0.9rem;
+    }
+    
+    .drama-meta, .drama-description {
+        font-size: 0.7rem;
+    }
+    
+    .episode-item {
+        min-width: 45px;
+        height: 28px;
+        font-size: 9px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Chat Modal -->
+    <div class="chat-modal" id="chatModal">
+        <div class="chat-container">
+            <button class="chat-close-btn" onclick="closeChatModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="chat-title">Chat With Us</h2>
+            <p class="chat-subtitle">You can <span style="color: #4a9eff;">Request Drama</span> Or <span style="color: #ff6b6b;">Report A Problem</span></p>
+            
+            <div class="chat-buttons">
+                <a href="https://m.me/Dramatize07" target="_blank" class="messenger-btn">
+                    <i class="fab fa-facebook-messenger"></i>
+                    Messenger
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="#" class="logo">Dramatize</a>
+        <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#korean">Korean</a>
+        <a href="#chinese">Chinese</a>
+        <a href="#explain">Explain</a>
+        <a href="#" onclick="openRequestMessenger()">Request</a>
+    </div>
+        <div class="nav-controls">
+            <button class="install-btn" id="installBtn" onclick="installApp()">
+                <i class="fas fa-download"></i> Install
+            </button>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search dramas.." id="searchInput">
+                <i class="fas fa-search" style="margin-left: -1.5rem; color: var(--text-secondary); font-size: 0.8rem;"></i>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button class="login-btn" id="loginBtn" onclick="openLoginModal()">...</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="login-modal" id="loginModal">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Login to Dramatize</h2>
+                <button class="close-btn" onclick="closeLoginModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+                <button type="submit" class="form-submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <div class="video-header">
+                <h2 class="video-title" id="modalDramaTitle">Drama Title</h2>
+                <p class="episode-title" id="modalEpisodeTitle">Episode 1</p>
+                <div class="description-box" id="descriptionBox">
+                    <div class="description-content" id="descriptionContent">
+                        <p class="drama-description" id="modalDramaDescription">Drama description goes here...</p>
+                    </div>
+                    <button class="description-toggle" id="descriptionToggle" onclick="toggleDescription()">
+                        <span id="toggleText">Read More</span>
+                        <i class="fas fa-chevron-down" id="toggleIcon"></i>
+                    </button>
+                </div>
+                <button class="close-btn" onclick="event.stopPropagation(); closeVideoPlayer();">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="screen-lock-btn" id="screenLockBtn" onclick="event.stopPropagation(); toggleScreenLock();">
+                    <i class="fas fa-lock-open" id="lockIcon"></i>
+                </button>
+            </div>
+            <div class="video-wrapper">
+                <video id="videoPlayer" controls playsinline>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="mobile-volume-popup" id="mobileVolumePopup">
+                    <i class="fas fa-volume-up mobile-volume-icon" id="mobileVolumeIcon"></i>
+                    <div class="mobile-volume-slider" id="mobileVolumeSlider">
+                        <div class="mobile-volume-slider-fill" id="mobileVolumeSliderFill">
+                            <div class="mobile-volume-slider-thumb"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="action-section">
+                <button class="action-btn favorite-btn" id="favoriteBtn" onclick="event.stopPropagation(); toggleFavorite();">
+                    <i class="fas fa-heart"></i> <span>Favorite</span>
+                </button>
+                <button class="action-btn share-btn" onclick="event.stopPropagation(); shareDrama();">
+                    <i class="fas fa-share"></i> <span>Share</span>
+                </button>
+            </div>
+            <div class="episode-section">
+                <div class="episode-header">
+                    <span class="episode-count" id="episodeCount">Episodes: 1-12</span>
+                    <div class="status-indicator">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="dramaStatus">In Progress</span>
+                    </div>
+                </div>
+                <div class="episode-list" id="episodeList"></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <div class="hero-carousel" id="heroCarousel"></div>
+            <div class="carousel-indicators" id="heroIndicators"></div>
+            <!-- Add navigation arrows -->
+            <button class="carousel-nav carousel-prev" onclick="prevSlide()" aria-label="Previous slide">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-nav carousel-next" onclick="nextSlide()" aria-label="Next slide">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </section>
+        <section class="section" id="korean">
+            <h2 class="section-title">Korean Dramas</h2>
+            <div class="drama-grid" id="koreanDramas">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="chinese">
+            <h2 class="section-title">Chinese Dramas</h2>
+            <div class="drama-grid" id="chineseDramas">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="explain">
+            <h2 class="section-title">Drama Explain</h2>
+            <div class="drama-grid" id="explanationContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+        <section class="section continue-watching">
+            <h2 class="section-title">Continue Watching</h2>
+            <div id="continueWatching"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <p>&copy; 2025 Dramatize. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        let dramaDataStore = {};
+        let isScreenLocked = false;
+        let currentDrama = null;
+        let currentEpisode = 1;
+        let player = null;
+        let favorites = JSON.parse(localStorage.getItem('dramatize-favorites')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('dramatize-user')) || null;
+        let currentTheme = localStorage.getItem('dramatize-theme') || 'dark';
+
+        // sampleDramaData is loaded from data.js
+
+        function sanitizeHTML(str) {
+            const temp = document.createElement('div');
+            temp.textContent = str || '';
+            return temp.innerHTML;
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function showNotification(message) {
+            let notification = document.getElementById('notification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'notification';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--accent-color);
+                    color: white;
+                    padding: 1rem;
+                    border-radius: 5px;
+                    z-index: 3000;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                document.body.appendChild(notification);
+            }
+            notification.textContent = message;
+            notification.style.opacity = '1';
+            setTimeout(() => {
+                notification.style.opacity = '0';
+            }, 3000);
+        }
+
+        async function loadDramaData() {
+            try {
+                console.log('Loading drama data from API...');
+                const timestamp = new Date().getTime();
+            const response = await fetch(`/api/dramas?_t=${timestamp}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    window.dramaData = {
+                        koreanDramas: data.korean || [],
+                        chineseDramas: data.chinese || [],
+                        explanationContent: data.explanation || []
+                    };
+                    console.log('Loaded drama data:', window.dramaData);
+                    return window.dramaData;
+                }
+            } catch (error) {
+                console.log('Admin API not available, using empty data');
+            }
+            
+            // Return empty data structure
+            window.dramaData = {
+                koreanDramas: [],
+                chineseDramas: [],
+                explanationContent: []
+            };
+            return window.dramaData;
+        }
+
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    if (email && password) {
+                        const user = { email, name: email.split('@')[0] };
+                        localStorage.setItem('dramatize-user', JSON.stringify(user));
+                        currentUser = user;
+                        closeLoginModal();
+                        checkLoginStatus();
+                        showNotification('Logged in successfully');
+                    }
+                });
+            }
+
+            document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            document.getElementById('videoModal').addEventListener('click', function(e) {
+                if (e.target === this && !isScreenLocked) {
+                    closeVideoPlayer();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !isScreenLocked) {
+                    closeVideoPlayer();
+                }
+            });
+        }
+
+        function openLoginModal() {
+            if (!currentUser) {
+                console.log('Opening login modal');
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+        }
+
+        function closeLoginModal() {
+            console.log('Closing login modal');
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function checkLoginStatus() {
+            const user = JSON.parse(localStorage.getItem('dramatize-user') || 'null');
+            const loginBtn = document.getElementById('loginBtn');
+            if (user) {
+                loginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
+                loginBtn.onclick = logout;
+                currentUser = user;
+            } else {
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i>';
+                loginBtn.onclick = openLoginModal;
+                currentUser = null;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('dramatize-user');
+            currentUser = null;
+            checkLoginStatus();
+            showNotification('Logged out successfully');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+
+
+        function handleOrientationChange() {
+            setTimeout(() => {
+                const videoPlayer = document.getElementById('videoPlayer');
+                if (videoPlayer && document.fullscreenElement) {
+                    // Adjust video size after orientation change
+                    videoPlayer.style.width = '100vw';
+                    videoPlayer.style.height = '100vh';
+                }
+            }, 100);
+        }
+
+        function handleResize() {
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer && document.fullscreenElement) {
+                // Maintain aspect ratio in fullscreen
+                videoPlayer.style.objectFit = 'contain';
+            }
+        }
+
+        function setupVideoFullscreenHandling() {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const modal = document.getElementById('videoModal');
+            
+            if (!videoPlayer || !modal) return;
+            
+            // Handle fullscreen changes
+            document.addEventListener('fullscreenchange', function() {
+                if (document.fullscreenElement === videoPlayer) {
+                    modal.classList.add('fullscreen');
+                } else {
+                    modal.classList.remove('fullscreen');
+                }
+            });
+            
+            // Double-click to fullscreen
+            videoPlayer.addEventListener('dblclick', function() {
+                if (videoPlayer.requestFullscreen) {
+                    videoPlayer.requestFullscreen();
+                } else if (videoPlayer.webkitRequestFullscreen) {
+                    videoPlayer.webkitRequestFullscreen();
+                } else if (videoPlayer.mozRequestFullScreen) {
+                    videoPlayer.mozRequestFullScreen();
+                }
+            });
+        }
+
+        function openVideoPlayerEnhanced(dramaId, episode = 1) {
+            console.log('Opening video player for:', { dramaId, episode, dramaDataStoreKeys: Object.keys(dramaDataStore) });
+            const scrollPosition = window.scrollY;
+            setupVideoFullscreenHandling();
+    
+            let drama = dramaDataStore[dramaId];
+            if (!drama) {
+                drama = dramaDataStore[parseInt(dramaId)];
+            }
+            
+            if ((!drama || !drama.episodes) && window.dramaData) {
+                const allDramas = [
+                    ...window.dramaData.koreanDramas,
+                    ...window.dramaData.chineseDramas,
+                    ...window.dramaData.explanationContent
+                ];
+                const freshDrama = allDramas.find(d => d.id == dramaId || d.id === parseInt(dramaId));
+                if (freshDrama) {
+                    drama = { ...drama, ...freshDrama };
+                    dramaDataStore[dramaId] = drama;
+                }
+            }
+    
+            currentDrama = drama;
+            currentEpisode = episode;
+
+            const modal = document.getElementById('videoModal');
+            const videoTitle = document.getElementById('modalDramaTitle');
+            const episodeTitle = document.getElementById('modalEpisodeTitle');
+            const dramaDescription = document.getElementById('modalDramaDescription');
+            const episodeCount = document.getElementById('episodeCount');
+            const dramaStatus = document.getElementById('dramaStatus');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const episodeList = document.getElementById('episodeList');
+
+            if (!currentDrama || !modal || !videoPlayer || !videoTitle || !episodeTitle || !dramaDescription || !episodeCount || !dramaStatus || !episodeList) {
+                console.error('Missing DOM elements or drama data');
+                showNotification('Error loading video player');
+                return;
+            }
+
+            try {
+                // Set modal content
+                videoTitle.textContent = sanitizeHTML(currentDrama.title || 'Unknown Drama');
+                episodeTitle.textContent = (currentDrama.episodes || 1) > 1 ? `Episode ${currentEpisode}` : 'Video';
+                dramaDescription.textContent = sanitizeHTML(currentDrama.description || 'No description available.');
+                episodeCount.textContent = (currentDrama.episodes || 1) > 1 ? `Episodes: 1-${currentDrama.episodes}` : 'Single Video';
+                dramaStatus.textContent = getDramaStatus(currentDrama.id);
+        
+                // Show modal with proper class
+                modal.classList.add('show');
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+        
+                populateEpisodeList(currentDrama);
+                updateFavoriteButton();
+                
+                // Load and play video
+                loadVideoForEpisode(currentEpisode);
+                
+            } catch (error) {
+                console.error('Error setting modal content:', error);
+                showNotification('Failed to load video');
+                return;
+            }
+
+            if (player) {
+                try {
+                    player.destroy();
+                } catch (e) {
+                    console.log('Player destroy error (safe to ignore):', e);
+                }
+                player = null;
+            }
+            
+            videoPlayer.pause();
+            videoPlayer.removeAttribute('src');
+            videoPlayer.src = '';
+            videoPlayer.load();
+            
+            setTimeout(() => {
+                player = new Plyr(videoPlayer, {
+                    controls: [
+                        'play-large', 
+                        'rewind',
+                        'play',
+                        'fast-forward', 
+                        'progress',
+                        'current-time',
+                        'duration',
+                        'mute',
+                        'volume',
+                        'settings',
+                        'fullscreen'
+                    ],
+                    settings: ['quality', 'speed'],
+                    quality: { default: 720, options: [1080, 720, 480, 360] },
+                    speed: { selected: 1, options: [0.5, 1, 1.5, 2] },
+                    keyboard: { focused: true, global: true },
+                    seekTime: 10
+                });
+
+                player.on('ready', () => {
+                    document.addEventListener('keydown', handleKeyboardShortcuts);
+                    window.scrollTo(0, scrollPosition);
+                    
+                    if (window.innerWidth <= 360) {
+                        setupMobileVolumeControl();
+                    }
+                });
+
+                player.on('destroy', () => {
+                    document.removeEventListener('keydown', handleKeyboardShortcuts);
+                });
+
+                player.on('enterfullscreen', () => {
+                    if (modal) {
+                        modal.classList.add('fullscreen');
+                        if (screen.orientation && screen.orientation.lock) {
+                            screen.orientation.lock('landscape').catch(() => {});
+                        }
+                    }
+                });
+
+                player.on('exitfullscreen', () => {
+                    if (modal) {
+                        modal.classList.remove('fullscreen');
+                        if (screen.orientation && screen.orientation.unlock) {
+                            screen.orientation.unlock();
+                        }
+                    }
+                });
+                
+                document.addEventListener('fullscreenchange', () => {
+                    if (modal) {
+                        if (document.fullscreenElement) {
+                            modal.classList.add('fullscreen');
+                        } else {
+                            modal.classList.remove('fullscreen');
+                        }
+                    }
+                });
+
+                player.on('timeupdate', () => {
+                    if (currentDrama && player.media) {
+                        const progress = Math.round((player.currentTime / player.duration) * 100);
+                        let continueWatching = JSON.parse(localStorage.getItem('continueWatching') || '[]');
+                        const existingIndex = continueWatching.findIndex(item => item.id === currentDrama.id);
+                        
+                        const savedData = {
+                            id: currentDrama.id,
+                            title: currentDrama.title,
+                            episode: currentEpisode,
+                            progress: progress,
+                            thumbnail: currentDrama.thumbnail || '',
+                            videoUrl: currentDrama.videoUrl || null,
+                            videoUrls: currentDrama.videoUrls || null,
+                            episodes: currentDrama.episodes || null,
+                            category: currentDrama.category || null,
+                            description: currentDrama.description || null,
+                            lastWatched: Date.now()
+                        };
+                        
+                        if (existingIndex > -1) {
+                            continueWatching[existingIndex] = { ...continueWatching[existingIndex], ...savedData };
+                        } else {
+                            continueWatching.push(savedData);
+                        }
+                        localStorage.setItem('continueWatching', JSON.stringify(continueWatching));
+                        dramaStatus.textContent = getDramaStatus(currentDrama.id);
+                    }
+                });
+                
+                let videoUrl = null;
+                
+                if (currentDrama.episodes && Array.isArray(currentDrama.episodes) && currentDrama.episodes.length > 0) {
+                    const episode = currentDrama.episodes.find(ep => ep.episodeNumber === currentEpisode) || currentDrama.episodes[currentEpisode - 1];
+                    videoUrl = episode ? episode.videoUrl : null;
+                } else if (currentDrama.videoUrls && Array.isArray(currentDrama.videoUrls)) {
+                    videoUrl = currentDrama.videoUrls[currentEpisode - 1];
+                } else {
+                    videoUrl = currentDrama.videoUrl;
+                }
+                
+                if (videoUrl) {
+                    const cacheBuster = Date.now();
+                    const finalUrl = videoUrl.includes('?') ? `${videoUrl}&_t=${cacheBuster}` : `${videoUrl}?_t=${cacheBuster}`;
+                    
+                    videoPlayer.src = finalUrl;
+                    videoPlayer.load();
+                } else {
+                    console.error('No video URL found for drama:', currentDrama);
+                    showNotification('Video not available');
+                }
+            }, 100); // 100ms delay to ensure clean state
+        }
+
+        function closeVideoPlayer() {
+            const modal = document.getElementById('videoModal');
+            const videoPlayer = document.getElementById('videoPlayer');
+            
+            if (player) {
+                try {
+                    player.destroy();
+                } catch (e) {
+                    console.log('Player destroy error (safe to ignore):', e);
+                }
+                player = null;
+            }
+            
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            if (videoPlayer) {
+                videoPlayer.pause();
+                videoPlayer.src = '';
+                videoPlayer.load();
+            }
+            
+            document.removeEventListener('keydown', handleKeyboardShortcuts);
+            
+            currentDrama = null;
+            currentEpisode = 1;
+        }
+
+        function toggleDescription() {
+            const content = document.getElementById('descriptionContent');
+            const toggle = document.getElementById('descriptionToggle');
+            const toggleText = document.getElementById('toggleText');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (content && toggle && toggleText && toggleIcon) {
+                const isExpanded = content.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    content.classList.remove('expanded');
+                    toggle.classList.remove('expanded');
+                    toggleText.textContent = 'Read More';
+                    toggleIcon.className = 'fas fa-chevron-down';
+                } else {
+                    content.classList.add('expanded');
+                    toggle.classList.add('expanded');
+                    toggleText.textContent = 'Show Less';
+                    toggleIcon.className = 'fas fa-chevron-up';
+                }
+            }
+        }
+
+        function toggleScreenLock() {
+            const lockBtn = document.getElementById('screenLockBtn');
+            const lockIcon = document.getElementById('lockIcon');
+            const modal = document.getElementById('videoModal');
+            isScreenLocked = !isScreenLocked;
+            if (isScreenLocked) {
+                lockBtn.classList.add('screen-locked');
+                lockIcon.className = 'fas fa-lock';
+                if (modal) modal.classList.add('player-locked');
+                // Keep video player clickable for play/pause
+                document.getElementById('videoPlayer').style.pointerEvents = 'auto';
+                // Disable most Plyr controls but keep play button accessible
+                const plyrControls = document.querySelector('.plyr__controls');
+                if (plyrControls) {
+                    // Disable all controls except play button
+                    const controlButtons = plyrControls.querySelectorAll('[data-plyr]:not([data-plyr="play"])');
+                    controlButtons.forEach(btn => {
+                        btn.style.pointerEvents = 'none';
+                        btn.style.opacity = '0.3';
+                    });
+                    // Keep play button fully functional
+                    const playButton = plyrControls.querySelector('[data-plyr="play"]');
+                    if (playButton) {
+                        playButton.style.pointerEvents = 'auto';
+                        playButton.style.opacity = '1';
+                    }
+                }
+                // Disable keyboard shortcuts except spacebar for play/pause
+                if (player) {
+                    player.keyboard = { focused: false, global: false };
+                }
+            } else {
+                lockBtn.classList.remove('screen-locked');
+                lockIcon.className = 'fas fa-lock-open';
+                if (modal) modal.classList.remove('player-locked');
+                // Re-enable all video player interactions
+                document.getElementById('videoPlayer').style.pointerEvents = 'auto';
+                // Re-enable all Plyr controls
+                const plyrControls = document.querySelector('.plyr__controls');
+                if (plyrControls) {
+                    const controlButtons = plyrControls.querySelectorAll('[data-plyr]');
+                    controlButtons.forEach(btn => {
+                        btn.style.pointerEvents = 'auto';
+                        btn.style.opacity = '1';
+                    });
+                }
+                // Re-enable keyboard shortcuts
+                if (player) {
+                    player.keyboard = { focused: true, global: true };
+                }
+            }
+        }
+
+        function handleKeyboardShortcuts(e) {
+            if (!player) return;
+            
+            if (isScreenLocked) {
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    if (player.playing) {
+                        player.pause();
+                    } else {
+                        player.play();
+                    }
+                }
+                return;
+            }
+            
+            switch(e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    player.rewind();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    player.forward();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    if (player.playing) {
+                        player.pause();
+                    } else {
+                        player.play();
+                    }
+                    break;
+            }
+        }
+
+        let volumePopupTimeout;
+
+        function setupMobileVolumeControl() {
+            if (!player) return;
+            
+            if (window.innerWidth > 360) return;
+            
+            const popup = document.getElementById('mobileVolumePopup');
+            const slider = document.getElementById('mobileVolumeSlider');
+            const sliderFill = document.getElementById('mobileVolumeSliderFill');
+            const volumeIcon = document.getElementById('mobileVolumeIcon');
+            
+            if (!popup || !slider || !sliderFill || !volumeIcon) return;
+            
+            const volumeButton = document.querySelector('.plyr__controls button[data-plyr="mute"]');
+            
+            if (volumeButton) {
+                const handleVolumeClick = function(e) {
+                    if (window.innerWidth > 360) return;
+                    
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    popup.classList.toggle('show');
+                    
+                    if (popup.classList.contains('show')) {
+                        const buttonRect = volumeButton.getBoundingClientRect();
+                        const popupHeight = 50;
+                        
+                        popup.style.left = (buttonRect.left - 60) + 'px';
+                        popup.style.bottom = (window.innerHeight - buttonRect.top + 10) + 'px';
+                        
+                        updateMobileVolumeUI();
+                        clearTimeout(volumePopupTimeout);
+                        volumePopupTimeout = setTimeout(() => {
+                            popup.classList.remove('show');
+                        }, 3000);
+                    }
+                };
+                
+                volumeButton.addEventListener('click', handleVolumeClick);
+            }
+            
+            let isDragging = false;
+            
+            function updateVolume(clientX) {
+                const rect = slider.getBoundingClientRect();
+                const x = clientX - rect.left;
+                const percentage = Math.max(0, Math.min(1, x / rect.width));
+                
+                if (player && player.media) {
+                    player.volume = percentage;
+                    updateMobileVolumeUI();
+                }
+            }
+            
+            function updateMobileVolumeUI() {
+                if (!player || !player.media) return;
+                
+                const volume = player.volume;
+                sliderFill.style.width = (volume * 100) + '%';
+                
+                if (volume === 0 || player.muted) {
+                    volumeIcon.className = 'fas fa-volume-mute mobile-volume-icon';
+                } else if (volume < 0.5) {
+                    volumeIcon.className = 'fas fa-volume-down mobile-volume-icon';
+                } else {
+                    volumeIcon.className = 'fas fa-volume-up mobile-volume-icon';
+                }
+            }
+            
+            slider.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                updateVolume(e.clientX);
+                clearTimeout(volumePopupTimeout);
+            });
+            
+            slider.addEventListener('touchstart', function(e) {
+                isDragging = true;
+                updateVolume(e.touches[0].clientX);
+                clearTimeout(volumePopupTimeout);
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    updateVolume(e.clientX);
+                }
+            });
+            
+            document.addEventListener('touchmove', function(e) {
+                if (isDragging) {
+                    updateVolume(e.touches[0].clientX);
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    volumePopupTimeout = setTimeout(() => {
+                        popup.classList.remove('show');
+                    }, 2000);
+                }
+            });
+            
+            document.addEventListener('touchend', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    volumePopupTimeout = setTimeout(() => {
+                        popup.classList.remove('show');
+                    }, 2000);
+                }
+            });
+            
+            slider.addEventListener('click', function(e) {
+                e.stopPropagation();
+                updateVolume(e.clientX);
+                clearTimeout(volumePopupTimeout);
+                volumePopupTimeout = setTimeout(() => {
+                    popup.classList.remove('show');
+                }, 2000);
+            });
+            
+            if (player) {
+                player.on('volumechange', updateMobileVolumeUI);
+            }
+            
+            updateMobileVolumeUI();
+            
+            document.addEventListener('click', function(e) {
+                if (!popup.contains(e.target) && e.target !== volumeButton) {
+                    popup.classList.remove('show');
+                }
+            });
+        }
+
+        function detectEpisodes(drama) {
+            if (!drama) {
+                return [];
+            }
+            
+            let episodes = [];
+            
+            if (drama.episodes && Array.isArray(drama.episodes) && drama.episodes.length > 0) {
+                episodes = drama.episodes
+                    .filter(ep => ep.isAvailable !== false)
+                    .map((ep, index) => ({
+                        id: ep.id,
+                        number: ep.episodeNumber || (index + 1),
+                        title: ep.title,
+                        description: ep.description,
+                        videoUrl: ep.videoUrl,
+                        duration: ep.videoLength,
+                        thumbnail: ep.thumbnail,
+                        airDate: ep.airDate,
+                        isAvailable: ep.isAvailable
+                    }))
+                    .sort((a, b) => a.number - b.number);
+            }
+            else if (drama.episodeList && Array.isArray(drama.episodeList) && drama.episodeList.length > 0) {
+                episodes = drama.episodeList;
+            }
+            else if (drama.videoUrls && Array.isArray(drama.videoUrls) && drama.videoUrls.length > 0) {
+                episodes = drama.videoUrls.map((url, index) => ({
+                    number: index + 1,
+                    title: `Part ${index + 1}`,
+                    videoUrl: url,
+                    duration: drama.videoLength || '15:00'
+                }));
+            }
+            else if (typeof detectEpisodesFromFolder === 'function' && drama.title) {
+                episodes = detectEpisodesFromFolder(drama.title, drama.videoUrl || '');
+                
+                if (episodes.length > 0) {
+                    drama.episodeList = episodes;
+                    drama.totalEpisodes = episodes.length;
+                }
+            }
+            else if (drama.totalEpisodes && drama.totalEpisodes >= 1) {
+                for (let i = 1; i <= drama.totalEpisodes; i++) {
+                    episodes.push({
+                        number: i,
+                        title: `Episode ${i}`,
+                        videoUrl: drama.videoUrls ? drama.videoUrls[i-1] : (drama.videoUrl || ''),
+                        duration: drama.videoLength || '24:00'
+                    });
+                }
+            }
+            else {
+                episodes = [{
+                    number: 1,
+                    title: drama.title || 'Episode 1',
+                    videoUrl: drama.videoUrl || '',
+                    duration: drama.videoLength || '24:00'
+                }];
+            }
+            
+            return episodes;
+        }
+
+        function populateEpisodeList(drama) {
+    const episodeList = document.getElementById('episodeList');
+    if (!episodeList) {
+        console.error('Episode list element not found');
+        return;
+    }
+    
+    episodeList.innerHTML = '';
+    
+    episodeList.style.cssText = `
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        overflow-x: auto !important;
+        gap: 8px !important;
+        padding: 10px !important;
+        background: transparent !important;
+        border: none !important;
+        min-height: 50px !important;
+        align-items: center !important;
+    `;
+    
+    const episodes = detectEpisodes(drama);
+    const episodeCount = episodes.length;
+    
+    if (episodeCount === 0) {
+        return;
+    }
+    
+    episodes.forEach((episode, index) => {
+        const episodeItem = document.createElement('div');
+        episodeItem.className = 'episode-item';
+        episodeItem.textContent = episode.number || (index + 1);
+        episodeItem.title = episode.title || `Episode ${episode.number || (index + 1)}`;
+        
+        // Clean, minimal styling for episode buttons
+        episodeItem.style.cssText = `
+            min-width: 32px !important;
+            height: 32px !important;
+            background: var(--secondary-bg) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            text-align: center !important;
+            line-height: 30px !important;
+            flex-shrink: 0 !important;
+            transition: all 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        `;
+        
+        // Mark first episode as current
+        if (index === 0) {
+            episodeItem.classList.add('current');
+            episodeItem.style.background = 'var(--accent-color) !important';
+            episodeItem.style.color = 'var(--primary-bg) !important';
+            episodeItem.style.borderColor = 'var(--accent-color) !important';
+        }
+        
+        // Simple hover effects
+        episodeItem.addEventListener('mouseenter', () => {
+            if (!episodeItem.classList.contains('current')) {
+                episodeItem.style.background = 'var(--hover-bg) !important';
+                episodeItem.style.borderColor = 'var(--accent-color) !important';
+            }
+        });
+        
+        episodeItem.addEventListener('mouseleave', () => {
+            if (!episodeItem.classList.contains('current')) {
+                episodeItem.style.background = 'var(--secondary-bg) !important';
+                episodeItem.style.borderColor = 'var(--border-color) !important';
+            }
+        });
+        
+        // Click event for episode switching
+        episodeItem.addEventListener('click', () => {
+            console.log(`Episode ${episode.number || (index + 1)} clicked`);
+            
+            try {
+                // Remove current class from all episodes
+                document.querySelectorAll('.episode-item').forEach(item => {
+                    item.classList.remove('current');
+                    item.style.background = 'var(--secondary-bg) !important';
+                    item.style.color = 'var(--text-primary) !important';
+                    item.style.borderColor = 'var(--border-color) !important';
+                });
+                
+                // Add current class to clicked episode
+                episodeItem.classList.add('current');
+                episodeItem.style.background = 'var(--accent-color) !important';
+                episodeItem.style.color = 'var(--primary-bg) !important';
+                episodeItem.style.borderColor = 'var(--accent-color) !important';
+                
+                // Update video source and player
+                const videoPlayer = document.getElementById('videoPlayer');
+                const episodeTitle = document.getElementById('modalEpisodeTitle');
+                
+                if (videoPlayer && episode.videoUrl) {
+                    console.log('Updating video source to:', episode.videoUrl);
+                    
+                    // Properly destroy existing player
+                    if (player) {
+                    try {
+                        player.destroy();
+                    } catch (error) {
+                        console.error('Error destroying player:', error);
+                    }
+                    player = null;
+                }
+                
+                videoPlayer.pause();
+                videoPlayer.removeAttribute('src');
+                videoPlayer.src = '';
+                videoPlayer.load();
+                
+                setTimeout(() => {
+                    const cacheBuster = Date.now();
+                    const finalUrl = episode.videoUrl.includes('?') 
+                        ? `${episode.videoUrl}&_t=${cacheBuster}` 
+                        : `${episode.videoUrl}?_t=${cacheBuster}`;
+                    
+                    videoPlayer.src = finalUrl;
+                    videoPlayer.load();
+                        
+                        player = new Plyr(videoPlayer, {
+                            controls: [
+                                'play-large', 
+                                'rewind',
+                                'play',
+                                'fast-forward', 
+                                'progress',
+                                'current-time',
+                                'duration',
+                                'mute',
+                                'volume',
+                                'settings',
+                                'fullscreen'
+                            ],
+                            settings: ['quality', 'speed'],
+                            quality: { default: 720, options: [1080, 720, 480, 360] },
+                            speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+                        });
+                        
+                        // Add fullscreen event handlers
+                        player.on('enterfullscreen', () => {
+                            const modal = document.getElementById('videoModal');
+                            if (modal) {
+                                modal.classList.add('fullscreen');
+                                // Lock orientation to landscape on mobile
+                                if (screen.orientation && screen.orientation.lock) {
+                                    screen.orientation.lock('landscape').catch(() => {});
+                                }
+                            }
+                        });
+
+                        player.on('exitfullscreen', () => {
+                            const modal = document.getElementById('videoModal');
+                            if (modal) {
+                                modal.classList.remove('fullscreen');
+                                // Unlock orientation
+                                if (screen.orientation && screen.orientation.unlock) {
+                                    screen.orientation.unlock();
+                                }
+                            }
+                        });
+                        
+                        // Handle native fullscreen changes
+                        document.addEventListener('fullscreenchange', () => {
+                            const modal = document.getElementById('videoModal');
+                            if (modal) {
+                                if (document.fullscreenElement) {
+                                    modal.classList.add('fullscreen');
+                                } else {
+                                    modal.classList.remove('fullscreen');
+                                }
+                            }
+                        });
+                        
+                        if (window.innerWidth <= 360) {
+                            setupMobileVolumeControl();
+                        }
+                        
+                        setTimeout(() => {
+                            if (player) {
+                                player.play().catch(error => {
+                                    console.error('Auto-play failed:', error);
+                                });
+                            }
+                        }, 300);
+                    }, 100);
+                }
+                
+                if (episodeTitle) {
+                    episodeTitle.textContent = episode.title || `Episode ${episode.number || (index + 1)}`;
+                }
+                
+                // Update episode count display
+                const episodeCountEl = document.getElementById('episodeCount');
+                if (episodeCountEl) {
+                    episodeCountEl.textContent = `Episode ${episode.number || (index + 1)} of ${episodes.length}`;
+                }
+                
+                // Show success notification
+                showNotification(`Playing ${episode.title || 'Episode ' + (episode.number || (index + 1))}`);
+                
+            } catch (error) {
+                console.error('Error switching episode:', error);
+                showNotification('Error switching episode');
+            }
+        });
+        
+        episodeList.appendChild(episodeItem);
+    });
+}
+
+        function loadVideoForEpisode(episodeNumber) {
+            if (!currentDrama) {
+                console.error('No current drama available');
+                showNotification('Error: No drama selected');
+                return;
+            }
+            
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (!videoPlayer) {
+                console.error('Video player element not found');
+                return;
+            }
+            
+            const episodes = detectEpisodes(currentDrama);
+            const episode = episodes.find(ep => ep.number === episodeNumber) || episodes[episodeNumber - 1];
+            
+            if (!episode) {
+                console.error('Episode not found:', episodeNumber);
+                showNotification(`Episode ${episodeNumber} not found`);
+                return;
+            }
+            
+            // Update current episode
+            currentEpisode = episodeNumber;
+            
+            // Update episode title
+            const episodeTitle = document.getElementById('modalEpisodeTitle');
+            if (episodeTitle) {
+                episodeTitle.textContent = episode.title || `Episode ${episodeNumber}`;
+            }
+            
+            // Update episode count display
+            const episodeCount = document.getElementById('episodeCount');
+            if (episodeCount) {
+                episodeCount.textContent = episodes.length > 1 ? `Episode ${episodeNumber} of ${episodes.length}` : 'Single Video';
+            }
+            
+            if (episode.videoUrl) {
+                if (player) {
+                    try {
+                        player.destroy();
+                    } catch (error) {
+                        console.error('Error destroying player:', error);
+                    }
+                    player = null;
+                }
+                
+                videoPlayer.pause();
+                videoPlayer.removeAttribute('src');
+                videoPlayer.src = '';
+                videoPlayer.load();
+                
+                setTimeout(() => {
+                    const cacheBuster = Date.now();
+                    const finalUrl = episode.videoUrl.includes('?') 
+                        ? `${episode.videoUrl}&_t=${cacheBuster}` 
+                        : `${episode.videoUrl}?_t=${cacheBuster}`;
+                    
+                    videoPlayer.src = finalUrl;
+                    videoPlayer.load();
+                    
+                    player = new Plyr(videoPlayer, {
+                        controls: [
+                            'play-large', 
+                            'rewind',
+                            'play',
+                            'fast-forward', 
+                            'progress',
+                            'current-time',
+                            'duration',
+                            'mute',
+                            'volume',
+                            'settings',
+                            'fullscreen'
+                        ],
+                        settings: ['quality', 'speed'],
+                        quality: { default: 720, options: [1080, 720, 480, 360] },
+                        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+                    });
+                    
+                    // Add fullscreen event handlers
+                    player.on('enterfullscreen', () => {
+                        const modal = document.getElementById('videoModal');
+                        if (modal) {
+                            modal.classList.add('fullscreen');
+                            // Lock orientation to landscape on mobile
+                            if (screen.orientation && screen.orientation.lock) {
+                                screen.orientation.lock('landscape').catch(() => {});
+                            }
+                        }
+                    });
+
+                    player.on('exitfullscreen', () => {
+                        const modal = document.getElementById('videoModal');
+                        if (modal) {
+                            modal.classList.remove('fullscreen');
+                            // Unlock orientation
+                            if (screen.orientation && screen.orientation.unlock) {
+                                screen.orientation.unlock();
+                            }
+                        }
+                    });
+                    
+                    // Handle native fullscreen changes
+                    document.addEventListener('fullscreenchange', () => {
+                        const modal = document.getElementById('videoModal');
+                        if (modal) {
+                            if (document.fullscreenElement) {
+                                modal.classList.add('fullscreen');
+                            } else {
+                                modal.classList.remove('fullscreen');
+                            }
+                        }
+                    });
+                    
+                    // Add timeupdate handler for continue watching
+                    player.on('timeupdate', () => {
+                        if (currentDrama && player.media) {
+                            const progress = Math.round((player.currentTime / player.duration) * 100);
+                            let continueWatching = JSON.parse(localStorage.getItem('continueWatching') || '[]');
+                            const existingIndex = continueWatching.findIndex(item => item.id === currentDrama.id);
+                            if (existingIndex > -1) {
+                                continueWatching[existingIndex].progress = progress;
+                                continueWatching[existingIndex].episode = currentEpisode;
+                                continueWatching[existingIndex].lastWatched = Date.now();
+                            } else {
+                                continueWatching.push({
+                                    id: currentDrama.id,
+                                    title: currentDrama.title,
+                                    episode: currentEpisode,
+                                    progress: progress,
+                                    thumbnail: currentDrama.thumbnail || '',
+                                    videoUrl: currentDrama.videoUrls ? currentDrama.videoUrls[currentEpisode - 1] : currentDrama.videoUrl,
+                                    lastWatched: Date.now()
+                                });
+                            }
+                            localStorage.setItem('continueWatching', JSON.stringify(continueWatching));
+                        }
+                    });
+                    
+                    if (window.innerWidth <= 360) {
+                        setupMobileVolumeControl();
+                    }
+                    
+                    setTimeout(() => {
+                        if (player) {
+                            player.play().catch(error => {
+                                console.error('Auto-play failed:', error);
+                            });
+                        }
+                    }, 300);
+                }, 100);
+            } else {
+                console.error('No video URL found for episode:', episode);
+                showNotification('Video not available for this episode');
+            }
+        }
+
+        function getDramaStatus(dramaId) {
+            const continueWatching = JSON.parse(localStorage.getItem('continueWatching') || '[]');
+            const item = continueWatching.find(item => item.id === dramaId);
+            if (item && item.progress >= 90 && item.episode >= dramaDataStore[dramaId].episodes) {
+                return 'Completed';
+            }
+            return 'In Progress';
+        }
+
+        function toggleFavorite() {
+            if (!currentUser) {
+                showNotification('Please login to add favorites');
+                openLoginModal();
+                return;
+            }
+            
+            let favorites = JSON.parse(localStorage.getItem(`favorites_${currentUser.email}`) || '[]');
+            const index = favorites.findIndex(fav => fav.id === currentDrama.id);
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            
+            if (index > -1) {
+                favorites.splice(index, 1);
+                favoriteBtn.classList.remove('favorited');
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> <span>Favorite</span>';
+                showNotification('Removed from favorites');
+            } else {
+                // Store only essential data for favorites, ensuring episodes is a number
+                const episodeCount = currentDrama.episodes && Array.isArray(currentDrama.episodes) 
+                    ? currentDrama.episodes.length 
+                    : (currentDrama.episodes || currentDrama.totalEpisodes || 1);
+                
+                favorites.push({
+                    id: currentDrama.id,
+                    title: currentDrama.title,
+                    thumbnail: currentDrama.thumbnail,
+                    episodes: episodeCount,
+                    videoUrl: currentDrama.videoUrl,
+                    videoUrls: currentDrama.videoUrls
+                });
+                favoriteBtn.classList.add('favorited');
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> <span>Favorited</span>';
+                showNotification('Added to favorites');
+            }
+            
+            localStorage.setItem(`favorites_${currentUser.email}`, JSON.stringify(favorites));
+            
+            // Update the merged continue watching section
+            populateContinueWatching();
+        }
+
+        function updateFavoriteButton() {
+            if (!currentDrama || !currentUser) return;
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            const favorites = JSON.parse(localStorage.getItem(`favorites_${currentUser.email}`) || '[]');
+            if (favorites.some(fav => fav.id === currentDrama.id)) {
+                favoriteBtn.classList.add('favorited');
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> <span>Favorited</span>';
+            } else {
+                favoriteBtn.classList.remove('favorited');
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> <span>Favorite</span>';
+            }
+        }
+
+        function shareDrama() {
+            if (!currentDrama) return;
+            if (navigator.share) {
+                navigator.share({
+                    title: currentDrama.title,
+                    text: `Check out this amazing drama: ${currentDrama.title}`,
+                    url: window.location.href
+                }).catch(error => {
+                    console.error('Share error:', error);
+                });
+            } else {
+                const shareText = `Check out "${currentDrama.title}" on Dramatize! ${window.location.href}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showNotification('Link copied to clipboard!');
+                }).catch(() => {
+                    showNotification('Unable to copy link');
+                });
+            }
+        }
+
+        async function createHeroSlides() {
+    let heroSlides = [];
+    
+    try {
+        // Try to load featured content from admin API
+        const timestamp = new Date().getTime();
+            const response = await fetch(`/api/featured-content?_t=${timestamp}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.content && data.content.hero) {
+                // Use featured dramas from admin panel
+                data.content.hero.forEach((drama, index) => {
+                    if (drama) {
+                        heroSlides.push({
+                            title: drama.title,
+                            description: drama.description || `Watch ${drama.title} with high-quality dubbing`,
+                            background: `url('${drama.thumbnail || drama.poster}')`,
+                            hideText: false,
+                            drama: drama
+                        });
+                    }
+                });
+            }
+        }
+    } catch (error) {
+        console.log('Featured content API not available, using fallback slides');
+    }
+    
+    // If no featured content or API unavailable, use fallback slides
+    if (heroSlides.length === 0) {
+        // Try to use first few dramas from loaded data as featured content
+        if (window.dramaData) {
+            const allDramas = [...(window.dramaData.koreanDramas || []), ...(window.dramaData.chineseDramas || [])];
+            allDramas.slice(0, 3).forEach(drama => {
+                heroSlides.push({
+                    title: drama.title,
+                    description: drama.description || `Watch ${drama.title} with high-quality dubbing`,
+                    background: `url('${drama.thumbnail}')`,
+                    backgroundSize: 'cover', // Full screen coverage
+                    backgroundPosition: 'center', // Can be adjusted: 'top', 'center top', 'center bottom', etc.
+                    hideText: false,
+                    drama: drama
+                });
+            });
+        }
+        
+    }
+    
+    // Always add support slide as the last slide
+    heroSlides.push({
+        title: "Support Dramatize",
+        description: "If you enjoy my work and want more dramas in your language, support me to keep this going!",
+        background: "linear-gradient(135deg, #ff6b9d 0%, #c44569 100%)",
+        isSupport: true,
+        hideText: false
+    });
+    
+    const carousel = document.getElementById('heroCarousel');
+    carousel.innerHTML = heroSlides.map(slide => {
+        // Determine background positioning - allow manual adjustment
+        const bgPosition = slide.backgroundPosition || 'center';
+        const bgSize = slide.backgroundSize || 'contain';
+        
+        return `
+        <div class="hero-slide" style="background: ${slide.background}; background-size: ${bgSize}; background-position: ${bgPosition}; background-repeat: no-repeat;">
+            <div class="hero-overlay" style="${slide.hideText ? 'display: none;' : ''}"></div>
+            <div class="hero-content" style="${slide.hideText ? 'display: none;' : ''}">
+                <h1 class="hero-title">${sanitizeHTML(slide.title)}</h1>
+                ${slide.isSupport ? 
+                    '<a href="https://www.patreon.com/c/dramatize12/posts" target="_blank" class="hero-btn" aria-label="Support on Patreon">Support Me on Patreon ❤️</a>' :
+                    '<button class="hero-btn" onclick="scrollToSection(\'korean\')" aria-label="Explore dramas">Explore Dramas</button>'
+                }
+            </div>
+        </div>`;
+    }).join('');
+    
+    // Update total slides count
+    totalSlides = heroSlides.length;
+    
+    // Create indicators
+    const indicators = document.getElementById('heroIndicators');
+    indicators.innerHTML = heroSlides.map((_, index) => `
+        <button class="carousel-indicator ${index === 0 ? 'active' : ''}" 
+                onclick="goToSlide(${index})" 
+                aria-label="Go to slide ${index + 1}"></button>
+    `).join('');
+        }
+
+        let currentSlide = 0;
+        let totalSlides = 4; // Default, will be updated by createHeroSlides
+        
+function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+    const carousel = document.getElementById('heroCarousel');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    
+    requestAnimationFrame(() => {
+        carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        // Update indicators
+        indicators.forEach((indicator, index) => {
+            if (index === currentSlide) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        });
+    });
+}
+
+        setInterval(nextSlide, 5000);
+
+function goToSlide(slideIndex) {
+    currentSlide = slideIndex;
+    updateCarousel();
+}
+
+        function createDramaCard(drama) {
+            const dramaId = drama.id || Date.now();
+            dramaDataStore[dramaId] = drama;
+            console.log('Created drama card with ID:', dramaId, 'Title:', drama.title);
+            
+            // Handle episodes using detectEpisodes function for accurate count
+            const detectedEpisodes = detectEpisodes(drama);
+            const episodeCount = detectedEpisodes.length;
+            
+            // Episode navigation is handled inside the video modal only
+            
+            return `
+                <div class="drama-card" data-video-id="${dramaId}" data-episode-title="${drama.title}" onclick="openVideoPlayerEnhanced('${dramaId}', 1)">
+                    <img src="${drama.thumbnail}" alt="${sanitizeHTML(drama.title)}" class="drama-thumbnail" loading="lazy"
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjUwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjY2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4='">
+                    <div class="drama-info">
+                        <h3 class="drama-title"><strong>${sanitizeHTML(drama.title)}</strong></h3>
+                        <div class="drama-meta">${episodeCount} episodes</div>
+                        <div class="drama-genre">${sanitizeHTML(drama.genre || drama.language || 'Drama')}</div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        function createExplanationCard(content) {
+            const dramaId = content.id || Date.now();
+            dramaDataStore[dramaId] = content;
+            console.log('Created explanation card with ID:', dramaId, 'Title:', content.title);
+            
+            // Handle episodes using detectEpisodes function for accurate count
+            const detectedEpisodes = detectEpisodes(content);
+            const episodeCount = detectedEpisodes.length;
+            
+            // Episode navigation is handled inside the video modal only
+            
+            return `
+                <div class="drama-card" onclick="openVideoPlayerEnhanced('${dramaId}', 1)" aria-label="Play ${sanitizeHTML(content.title)}">
+                    <img src="${content.thumbnail}" alt="${sanitizeHTML(content.title)}" class="drama-thumbnail" loading="lazy"
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjUwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjY2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4='">
+                    <div class="drama-info">
+                        <h3 class="drama-title"><strong>${sanitizeHTML(content.title)}</strong></h3>
+                        <div class="drama-meta">${episodeCount} episodes</div>
+                        <div class="drama-genre">${sanitizeHTML(content.language || 'English')}</div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        async function populateDramas() {
+            try {
+                console.log('Populating dramas...');
+                const dramaData = await loadDramaData();
+                dramaDataStore = {};
+                dramaData.koreanDramas.forEach(drama => {
+                    dramaDataStore[drama.id] = drama;
+                });
+                dramaData.chineseDramas.forEach(drama => {
+                    dramaDataStore[drama.id] = drama;
+                });
+                dramaData.explanationContent.forEach(content => {
+                    dramaDataStore[content.id] = content;
+                });
+                console.log('dramaDataStore populated:', Object.keys(dramaDataStore));
+                document.getElementById('koreanDramas').innerHTML = 
+                    dramaData.koreanDramas.map(createDramaCard).join('');
+                document.getElementById('chineseDramas').innerHTML = 
+                    dramaData.chineseDramas.map(createDramaCard).join('');
+                document.getElementById('explanationContent').innerHTML = 
+                    dramaData.explanationContent.map(createExplanationCard).join('');
+                console.log('Dramas populated successfully');
+            } catch (error) {
+                console.error('Error populating dramas:', error);
+                showNotification('Error loading dramas');
+            }
+        }
+
+        function deleteContinueItem(dramaId, dramaTitle) {
+            // Show confirmation dialog
+            if (!confirm(`Are you sure you want to remove "${dramaTitle}" from your library?\n\nThis will delete your watch progress and remove it from favorites.`)) {
+                return;
+            }
+            
+            try {
+                // Remove from continue watching
+                let continueWatching = JSON.parse(localStorage.getItem('continueWatching') || '[]');
+                continueWatching = continueWatching.filter(item => item.id !== dramaId);
+                localStorage.setItem('continueWatching', JSON.stringify(continueWatching));
+                
+                // Remove from favorites if user is logged in
+                if (currentUser) {
+                    let favorites = JSON.parse(localStorage.getItem(`favorites_${currentUser.email}`) || '[]');
+                    favorites = favorites.filter(fav => fav.id !== dramaId);
+                    localStorage.setItem(`favorites_${currentUser.email}`, JSON.stringify(favorites));
+                }
+                
+                // Remove from drama data store
+                delete dramaDataStore[dramaId];
+                
+                // Refresh the continue watching section
+                populateContinueWatching();
+                
+                // Show success notification
+                showNotification(`"${dramaTitle}" removed from your library`);
+                
+                console.log(`Deleted drama: ${dramaTitle} (ID: ${dramaId})`);
+            } catch (error) {
+                console.error('Error deleting continue item:', error);
+                showNotification('Error removing drama from library');
+            }
+        }
+
+        function clearAllContinueWatching() {
+            if (!confirm('Are you sure you want to clear your entire Continue Watching library?\n\nThis will remove all watch progress and favorites. This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                // Clear continue watching
+                localStorage.removeItem('continueWatching');
+                
+                // Clear favorites if user is logged in
+                if (currentUser) {
+                    localStorage.removeItem(`favorites_${currentUser.email}`);
+                }
+                
+                // Clear drama data store
+                Object.keys(dramaDataStore).forEach(key => {
+                    delete dramaDataStore[key];
+                });
+                
+                // Refresh the section
+                populateContinueWatching();
+                
+                showNotification('Library cleared successfully');
+            } catch (error) {
+                console.error('Error clearing library:', error);
+                showNotification('Error clearing library');
+            }
+        }
+
+        function populateContinueWatching() {
+            try {
+                console.log('Populating continue watching with favorites...');
+                const continueWatching = JSON.parse(localStorage.getItem('continueWatching') || '[]');
+                const favorites = currentUser ? JSON.parse(localStorage.getItem(`favorites_${currentUser.email}`) || '[]') : [];
+                
+                // Merge continue watching and favorites
+                const mergedLibrary = new Map();
+                
+                // Add continue watching items
+                continueWatching.forEach(item => {
+                    mergedLibrary.set(item.id, {
+                        ...item,
+                        isFavorited: false,
+                        hasProgress: true,
+                        lastWatched: item.lastWatched || Date.now()
+                    });
+                });
+                
+                // Add favorited items (mark as favorited)
+                favorites.forEach(fav => {
+                    if (mergedLibrary.has(fav.id)) {
+                        mergedLibrary.get(fav.id).isFavorited = true;
+                    } else {
+                        mergedLibrary.set(fav.id, {
+                            ...fav,
+                            isFavorited: true,
+                            hasProgress: false,
+                            progress: 0,
+                            episode: 1,
+                            lastWatched: 0
+                        });
+                    }
+                });
+                
+                const container = document.getElementById('continueWatching');
+                
+                if (mergedLibrary.size === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No dramas in your library yet. Start watching or add favorites!</p>';
+                    return;
+                }
+                
+                // Sort: Favorited + Recently Watched first, then by last watched time
+                const sortedItems = Array.from(mergedLibrary.values()).sort((a, b) => {
+                    // Prioritize favorited items with progress
+                    if (a.isFavorited && a.hasProgress && !(b.isFavorited && b.hasProgress)) return -1;
+                    if (b.isFavorited && b.hasProgress && !(a.isFavorited && a.hasProgress)) return 1;
+                    
+                    // Then favorited items without progress
+                    if (a.isFavorited && !b.isFavorited) return -1;
+                    if (b.isFavorited && !a.isFavorited) return 1;
+                    
+                    // Finally by last watched time
+                    return b.lastWatched - a.lastWatched;
+                });
+                
+                container.innerHTML = sortedItems.map(item => {
+                    if (!dramaDataStore[item.id] || !dramaDataStore[item.id].episodes) {
+                        dramaDataStore[item.id] = item;
+                    }
+                    const heartOverlay = item.isFavorited ? '<div class="heart-overlay"><i class="fas fa-heart"></i></div>' : '';
+                    const progressInfo = item.hasProgress ? 
+                        `Episode ${item.episode || 1} • ${item.progress}% complete` : 
+                        `${item.episodes || 1} episodes • Not started`;
+                    
+                    return `
+                        <div class="continue-item ${item.isFavorited ? 'favorited' : ''}" onclick="openVideoPlayerEnhanced('${item.id}', ${item.episode || 1})" aria-label="${item.hasProgress ? 'Continue watching' : 'Start watching'} ${sanitizeHTML(item.title)}">
+                            <div class="continue-thumbnail-container">
+                                <img src="${item.thumbnail}" alt="${sanitizeHTML(item.title)}" class="continue-thumbnail" loading="lazy">
+                                ${heartOverlay}
+                                <button class="delete-continue-btn" onclick="event.stopPropagation(); deleteContinueItem('${item.id}', '${sanitizeHTML(item.title)}')" aria-label="Remove ${sanitizeHTML(item.title)} from library" title="Remove from library">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            <div class="continue-info">
+                                <h4 class="continue-title">${sanitizeHTML(item.title)}</h4>
+                                <p>${progressInfo}</p>
+                                ${item.hasProgress ? `
+                                    <div class="continue-progress">
+                                        <div class="continue-progress-fill" style="width: ${item.progress}%"></div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Add clear all button if there are items
+                if (mergedLibrary.size > 0) {
+                    container.innerHTML += `
+                        <button class="clear-all-btn" onclick="clearAllContinueWatching()" style="
+                            margin-top: 20px;
+                            background: var(--border-color);
+                            color: var(--text-secondary);
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-size: 0.9rem;
+                            transition: all 0.3s ease;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                            width: 100%;
+                        ">
+                            <i class="fas fa-trash-alt"></i>
+                            Clear All
+                        </button>
+                    `;
+                }
+                
+                console.log('Continue watching with favorites populated');
+            } catch (error) {
+                console.error('Error populating continue watching:', error);
+                showNotification('Error loading your library');
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', debounce(function(e) {
+            try {
+                const searchTerm = sanitizeHTML(e.target.value.toLowerCase());
+                const dramaCards = document.querySelectorAll('.drama-card');
+                dramaCards.forEach(card => {
+                    const title = card.querySelector('.drama-title').textContent.toLowerCase();
+                    const genre = card.querySelector('.drama-genre').textContent.toLowerCase();
+                    card.style.display = (title.includes(searchTerm) || genre.includes(searchTerm)) ? 'block' : 'none';
+                });
+            } catch (error) {
+                console.error('Error in search:', error);
+            }
+        }, 300));
+
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openRequestMessenger() {
+            document.getElementById('chatModal').style.display = 'flex';
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const chatModal = document.getElementById('chatModal');
+            if (event.target === chatModal) {
+                closeChatModal();
+            }
+        });
+
+        function populateFavorites() {
+            // Redirect to merged continue watching functionality
+            populateContinueWatching();
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM content loaded at', new Date().toLocaleString());
+            
+            initTheme();
+            await loadDramaData();
+            await createHeroSlides();
+            await populateDramas();
+            populateContinueWatching();
+            populateFavorites();
+            setupEventListeners();
+            checkLoginStatus();
+            
+            // Initialize PWA functionality after DOM is ready
+            initializePWA();
+            
+            console.log('Initialization complete');
+        });
+
+        // Enhanced PWA functionality
+        let deferredPrompt;
+        let installButton;
+
+        function initializePWA() {
+            installButton = document.getElementById('installBtn');
+            
+            // Always show the install button initially
+            if (installButton) {
+                installButton.style.display = 'flex';
+                console.log('Install button is now visible');
+            }
+            
+            // Check if already installed and hide button if so
+            if (checkIfInstalled()) {
+                if (installButton) {
+                    installButton.style.display = 'none';
+                }
+            }
+        }
+
+        // Enhanced PWA functionality for mobile users - PART 1
+// Declare deferredPrompt only if not already declared
+if (typeof deferredPrompt === 'undefined') {
+    let deferredPrompt;
+}
+// Declare installButton only if not already declared
+if (typeof installButton === 'undefined') {
+    let installButton;
+}
+let isInstallable = false;
+
+function initializePWA() {
+    installButton = document.getElementById('installBtn');
+    
+    // Always show install button for mobile users
+    if (installButton) {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            installButton.style.display = 'flex';
+            installButton.innerHTML = '<i class="fas fa-download"></i> Install App';
+            console.log('Mobile detected - showing install button');
+        }
+    }
+    
+    // Check if already installed
+    if (checkIfInstalled()) {
+        if (installButton) {
+            installButton.style.display = 'none';
+        }
+        return;
+    }
+    
+    // Check PWA installability
+    checkPWAInstallability();
+}
+
+// Enhanced PWA installability check
+function checkPWAInstallability() {
+    // Check if all PWA requirements are met
+    const hasManifest = document.querySelector('link[rel="manifest"]');
+    const hasServiceWorker = 'serviceWorker' in navigator;
+    const isHTTPS = location.protocol === 'https:' || location.hostname === 'localhost';
+    
+    console.log('PWA Requirements Check:');
+    console.log('- Manifest:', !!hasManifest);
+    console.log('- Service Worker:', hasServiceWorker);
+    console.log('- HTTPS:', isHTTPS);
+    
+    if (hasManifest && hasServiceWorker && isHTTPS) {
+        isInstallable = true;
+        console.log('PWA is installable');
+    } else {
+        console.log('PWA requirements not fully met');
+        if (!isHTTPS) {
+            console.warn('HTTPS required for PWA install prompt');
+        }
+    }
+}
+
+// Service Worker Registration with better error handling
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async function() {
+        try {
+            const registration = await navigator.serviceWorker.register('service-worker.js');
+            console.log('ServiceWorker registration successful:', registration.scope);
+            
+            // Force update check
+            registration.update();
+            
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showNotification('App updated! Refresh to see changes.');
+                    }
+                });
+            });
+        } catch (err) {
+            console.error('ServiceWorker registration failed:', err);
+        }
+    });
+}
+
+// PWA Install prompt handling
+window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('PWA install prompt available');
+    e.preventDefault();
+    deferredPrompt = e;
+    isInstallable = true;
+    
+    // Show install button when PWA is installable
+    if (installButton) {
+        installButton.style.display = 'flex';
+        installButton.innerHTML = '<i class="fas fa-download"></i> Install App';
+        installButton.classList.add('pwa-installable');
+        console.log('Native PWA install prompt available');
+    }
+});
+
+// Check if app is already installed
+function checkIfInstalled() {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                        window.navigator.standalone === true;
+    
+    if (isStandalone) {
+        console.log('App is running in standalone mode');
+        return true;
+    }
+    return false;
+}
+
+// Enhanced PWA functionality for mobile users - PART 2
+
+// Enhanced install function for mobile
+async function installApp() {
+    console.log('Install button clicked');
+    
+    if (!installButton) {
+        console.log('Install button not found');
+        return;
+    }
+    
+    // Check if already installed
+    if (checkIfInstalled()) {
+        showNotification('App is already installed!');
+        return;
+    }
+    
+    // Try native install prompt first
+    if (deferredPrompt) {
+        try {
+            console.log('Showing native PWA install prompt');
+            
+            // Show the install prompt
+            const promptResult = await deferredPrompt.prompt();
+            
+            // Wait for the user's response
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+                showNotification('Installing app...');
+                
+                // Hide install button
+                installButton.style.display = 'none';
+            } else {
+                console.log('User dismissed the install prompt');
+                showNotification('Installation cancelled');
+            }
+            
+            // Clear the deferredPrompt
+            deferredPrompt = null;
+            return;
+        } catch (error) {
+            console.error('Error during native installation:', error);
+        }
+    }
+    
+    // Fallback to manual instructions for mobile
+    console.log('No native prompt available, showing mobile instructions');
+    showMobileInstallInstructions();
+}
+
+// Mobile-specific install instructions
+function showMobileInstallInstructions() {
+    const userAgent = navigator.userAgent;
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+    const isAndroid = /Android/.test(userAgent);
+    const isSamsung = /SamsungBrowser/.test(userAgent);
+    const isChrome = /Chrome/.test(userAgent) && !/Edge/.test(userAgent);
+    
+    let title = 'Install Dramatize App';
+    let instructions = '';
+    
+    if (isIOS) {
+        instructions = `\n📱 **Install on iPhone/iPad:**\n\n1. Tap the Share button (⬆️) at the bottom\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" to install the app\n4. Find the app on your home screen!\n\n✨ Enjoy offline viewing and faster loading!`;
+    } else if (isAndroid) {
+        if (isChrome) {
+            instructions = `\n📱 **Install on Android (Chrome):**\n\n1. Tap the menu (⋮) in the top-right corner\n2. Tap "Add to Home screen" or "Install app"\n3. Tap "Install" to confirm\n4. Find the app on your home screen!\n\n✨ Enjoy offline viewing and faster loading!`;
+        } else if (isSamsung) {
+            instructions = `\n📱 **Install on Samsung Browser:**\n\n1. Tap the menu (≡) at the bottom\n2. Tap "Add page to" → "Home screen"\n3. Tap "Add" to install\n4. Find the app on your home screen!\n\n✨ Enjoy offline viewing and faster loading!`;
+        } else {
+            instructions = `\n📱 **Install on Android:**\n\n1. Tap your browser's menu button\n2. Look for "Add to Home screen" or "Install"\n3. Follow the prompts to install\n4. Find the app on your home screen!\n\n✨ Enjoy offline viewing and faster loading!`;
+        }
+    } else {
+        instructions = `\n💻 **Install on Desktop:**\n\n1. Look for the install icon (⬇️) in your address bar\n2. Or check your browser menu for "Install"\n3. Click "Install" to add to your device\n4. Access from your desktop or start menu!\n\n✨ Enjoy the full app experience!`;
+    }
+    
+    // Create a custom modal for better mobile experience
+    showInstallModal(title, instructions);
+}
+
+// Custom install modal for better mobile UX
+function showInstallModal(title, instructions) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById('installModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const modal = document.createElement('div');
+    modal.id = 'installModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        padding: 20px;
+        box-sizing: border-box;
+    `;
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: var(--bg-primary, #1a1a1a);
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 400px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+        text-align: center;
+        color: var(--text-primary, #ffffff);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    `;
+    
+    modalContent.innerHTML = `
+        <div style="font-size: 2rem; margin-bottom: 20px;">📱</div>
+        <h3 style="margin: 0 0 20px 0; color: var(--accent-color, #ff6b9d);">${title}</h3>
+        <div style="white-space: pre-line; line-height: 1.6; margin-bottom: 30px; text-align: left;">${instructions}</div>
+        <button onclick="document.getElementById('installModal').remove()" 
+                style="
+                    background: var(--accent-color, #ff6b9d);
+                    color: white;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 25px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                ">Got it!</button>
+    `;
+    
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// App installed event
+window.addEventListener('appinstalled', (evt) => {
+    console.log('PWA was installed successfully');
+    showNotification('🎉 App installed successfully! You can now use it offline.');
+    
+    // Hide install button
+    if (installButton) {
+        installButton.style.display = 'none';
+    }
+    
+    // Track installation (optional analytics)
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'pwa_install', {
+            event_category: 'PWA',
+            event_label: 'App Installed'
+        });
+    }
+});
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            if (savedTheme === 'light') {
+                body.setAttribute('data-theme', 'light');
+                if (themeIcon) themeIcon.className = 'fas fa-sun';
+            } else {
+                body.removeAttribute('data-theme');
+                if (themeIcon) themeIcon.className = 'fas fa-moon';
+            }
+        }
+    </script>
+    <!-- Secure Video Player Components - Temporarily disabled to prevent conflicts -->
+<!-- <script src="secure-video-player.js"></script> -->
+<!-- <script src="video-player-integration.js"></script> -->
+
+<script>
+
+
+// Enhanced video player initialization
+function initializeVideoPlayer() {
+    const videoPlayer = document.getElementById('videoPlayer');
+    
+    if (videoPlayer) {
+        // Add fullscreen button click handler
+        videoPlayer.addEventListener('dblclick', function() {
+            if (videoPlayer.requestFullscreen) {
+                videoPlayer.requestFullscreen();
+            } else if (videoPlayer.webkitRequestFullscreen) {
+                videoPlayer.webkitRequestFullscreen();
+            } else if (videoPlayer.mozRequestFullScreen) {
+                videoPlayer.mozRequestFullScreen();
+            }
+        });
+    }
+}
+
+function openVideoPlayer(videoUrl, title, description) {
+    // Redirect to the enhanced version
+    openVideoPlayerEnhanced(videoUrl, title, description);
+}
+
+// Episode management functions
+
+</script>
+
+<!-- Global Frontend Protection -->
+<script>
+// Disable right-click context menu
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// Disable common keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+    if (e.keyCode === 123 || 
+        (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+        (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+// Basic dev tools detection
+let devtools = {open: false, orientation: null};
+const threshold = 160;
+setInterval(function() {
+    if (window.outerHeight - window.innerHeight > threshold || 
+        window.outerWidth - window.innerWidth > threshold) {
+        if (!devtools.open) {
+            devtools.open = true;
+            console.clear();
+            console.log('%cDeveloper tools detected!', 'color: red; font-size: 20px;');
+        }
+    } else {
+        devtools.open = false;
+    }
+}, 500);
+
+// Initialize secure video player when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof SecureVideoPlayer !== 'undefined') {
+        console.log('🔒 Secure Video Player initialized');
+    }
+});
+</script>
+
+<!-- Load drama data -->
+<script src="data.js"></script>
+
+</body>
+</html>

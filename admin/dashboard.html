@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dramatize Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="dashboard active" id="dashboard">
+        <header class="header">
+            <h1>🎬 Dramatize Admin</h1>
+            <div class="header-actions">
+                <button class="btn btn-success" onclick="openAddModal()">+ Add Drama</button>
+                <button class="btn btn-primary" onclick="viewWebsite()">View Website</button>
+                <button class="btn btn-danger" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDramas">0</div>
+                    <div class="stat-label">Total Dramas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="koreanDramas">0</div>
+                    <div class="stat-label">Korean Dramas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="chineseDramas">0</div>
+                    <div class="stat-label">Chinese Dramas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="explanationVideos">0</div>
+                    <div class="stat-label">Explanation Videos</div>
+                </div>
+            </div>
+
+            <!-- Homepage Management Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Homepage Featured Content</h2>
+                    <button class="btn btn-primary" onclick="refreshHomepage()">🔄 Refresh Homepage</button>
+                </div>
+                <div class="section-content">
+                    <div class="homepage-grid">
+                        <div class="homepage-section">
+                            <h3>Hero Carousel (Featured Dramas)</h3>
+                            <div class="featured-slots">
+                                <div class="featured-slot" id="hero-slot-1">
+                                    <div class="slot-header">
+                                        <span>Slot 1</span>
+                                        <button class="btn btn-sm" onclick="selectForHero(1)">Change</button>
+                                    </div>
+                                    <div class="slot-content" id="hero-content-1">
+                                        <div class="empty-slot">Click 'Change' to select drama</div>
+                                    </div>
+                                </div>
+                                <div class="featured-slot" id="hero-slot-2">
+                                    <div class="slot-header">
+                                        <span>Slot 2</span>
+                                        <button class="btn btn-sm" onclick="selectForHero(2)">Change</button>
+                                    </div>
+                                    <div class="slot-content" id="hero-content-2">
+                                        <div class="empty-slot">Click 'Change' to select drama</div>
+                                    </div>
+                                </div>
+                                <div class="featured-slot" id="hero-slot-3">
+                                    <div class="slot-header">
+                                        <span>Slot 3</span>
+                                        <button class="btn btn-sm" onclick="selectForHero(3)">Change</button>
+                                    </div>
+                                    <div class="slot-content" id="hero-content-3">
+                                        <div class="empty-slot">Click 'Change' to select drama</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="homepage-section">
+                            <h3>Section Highlights</h3>
+                            <div class="highlight-controls">
+                                <div class="highlight-item">
+                                    <label>Korean Drama Highlight:</label>
+                                    <select id="korean-highlight" onchange="updateSectionHighlight('korean', this.value)">
+                                        <option value="">Select drama...</option>
+                                    </select>
+                                </div>
+                                <div class="highlight-item">
+                                    <label>Chinese Drama Highlight:</label>
+                                    <select id="chinese-highlight" onchange="updateSectionHighlight('chinese', this.value)">
+                                        <option value="">Select drama...</option>
+                                    </select>
+                                </div>
+                                <div class="highlight-item">
+                                    <label>Featured Explanation:</label>
+                                    <select id="explanation-highlight" onchange="updateSectionHighlight('explanation', this.value)">
+                                        <option value="">Select video...</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Korean Dramas Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Korean Dramas</h2>
+                    <button class="btn btn-success" onclick="openAddModal('korean')">+ Add Korean Drama</button>
+                </div>
+                <div class="section-content">
+                    <div id="koreanDramasList" class="drama-list"></div>
+                </div>
+            </div>
+
+            <!-- Chinese Dramas Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Chinese Dramas</h2>
+                    <button class="btn btn-success" onclick="openAddModal('chinese')">+ Add Chinese Drama</button>
+                </div>
+                <div class="section-content">
+                    <div id="chineseDramasList" class="drama-list"></div>
+                </div>
+            </div>
+
+            <!-- Explanation Videos Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Explanation Videos</h2>
+                    <button class="btn btn-success" onclick="openAddModal('explanation')">+ Add Explanation Video</button>
+                </div>
+                <div class="section-content">
+                    <div id="explanationVideosList" class="drama-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="dramaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Drama</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="dramaForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="title">Title *</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="korean">Korean Drama</option>
+                            <option value="chinese">Chinese Drama</option>
+                            <option value="explanation">Explanation Video</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="episodes">Episodes</label>
+                        <input type="number" id="episodes" name="episodes" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <input type="text" id="genre" name="genre" placeholder="Romance, Action, Comedy">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" required placeholder="Enter drama description..."></textarea>
+                </div>
+
+                <!-- Remove the video input method selection section -->
+                <!-- Replace the entire video input section with this: -->
+
+                <div class="form-group">
+                    <label for="videoFile">Upload Video File *</label>
+                    <input type="file" id="videoFile" name="videoFile" accept="video/*,.mp4,.mkv,.webm,.avi,.mov" required>
+                    <small>Supported formats: MP4, MKV, WebM, AVI, MOV (Max size: 500MB)</small>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="videoLength">Video Length</label>
+                        <input type="text" id="videoLength" name="videoLength" placeholder="1h 30m or 90:00">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <input type="text" id="language" name="language" value="English" placeholder="English, Korean, Chinese">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="thumbnail">Poster/Thumbnail Image</label>
+                    <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+                    <small>Upload a new image or leave empty to keep current</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="subtitles">Subtitles URL (Optional)</label>
+                    <input type="text" id="subtitles" name="subtitles" placeholder="https://... or local path to .vtt/.srt file">
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
+                    <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Drama</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Episode Management Modal -->
+    <div class="modal" id="episodeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="episodeModalTitle">Manage Episodes</h2>
+                <button class="close-btn" onclick="closeEpisodeModal()">&times;</button>
+            </div>
+            <div class="episode-management">
+                <div class="episode-header">
+                    <h3 id="dramaTitle">Drama Title</h3>
+                    <button class="btn btn-success" onclick="openAddEpisodeModal()">+ Add Episode</button>
+                </div>
+                <div class="episodes-list" id="episodesList">
+                    <!-- Episodes will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Episode Modal -->
+    <div class="modal" id="addEpisodeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="addEpisodeModalTitle">Add New Episode</h2>
+                <button class="close-btn" onclick="closeAddEpisodeModal()">&times;</button>
+            </div>
+            <form id="episodeForm">
+                <input type="hidden" id="episodeId" name="episodeId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="episodeNumber">Episode Number *</label>
+                        <input type="number" id="episodeNumber" name="episodeNumber" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="episodeTitle">Episode Title *</label>
+                        <input type="text" id="episodeTitle" name="episodeTitle" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="episodeDescription">Episode Description</label>
+                    <textarea id="episodeDescription" name="episodeDescription" placeholder="Enter episode description..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="episodeVideoFile">Upload Episode Video *</label>
+                    <input type="file" id="episodeVideoFile" name="episodeVideoFile" accept="video/*,.mp4,.mkv,.webm,.avi,.mov">
+                    <small>Supported formats: MP4, MKV, WebM, AVI, MOV (Max size: 500MB)</small>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="episodeVideoLength">Video Length</label>
+                        <input type="text" id="episodeVideoLength" name="episodeVideoLength" placeholder="45:30">
+                    </div>
+                    <div class="form-group">
+                        <label for="episodeAirDate">Air Date</label>
+                        <input type="date" id="episodeAirDate" name="episodeAirDate">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="episodeThumbnail">Episode Thumbnail (Optional)</label>
+                    <input type="file" id="episodeThumbnail" name="episodeThumbnail" accept="image/*">
+                    <small>Upload a thumbnail for this episode</small>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="episodeIsAvailable" name="episodeIsAvailable" checked>
+                        Episode is available for viewing
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
+                    <button type="button" class="btn" onclick="closeAddEpisodeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Episode</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

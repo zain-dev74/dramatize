@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
+  <!-- Dramatize Logo -->
+  <style>
+    .logo-text { font-family: 'Montserrat', sans-serif; font-weight: bold; }
+    .dark-theme { fill: #FFFFFF; }
+    .light-theme { fill: #000000; }
+    .logo-icon { stroke-width: 2; }
+  </style>
+  
+  <!-- Film Reel Icon -->
+  <g class="logo-icon dark-theme">
+    <circle cx="25" cy="25" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="25" cy="25" r="3" fill="currentColor"/>
+    <circle cx="25" cy="10" r="3" fill="currentColor"/>
+    <circle cx="25" cy="40" r="3" fill="currentColor"/>
+    <circle cx="10" cy="25" r="3" fill="currentColor"/>
+    <circle cx="40" cy="25" r="3" fill="currentColor"/>
+    <circle cx="17" cy="17" r="3" fill="currentColor"/>
+    <circle cx="33" cy="33" r="3" fill="currentColor"/>
+    <circle cx="17" cy="33" r="3" fill="currentColor"/>
+    <circle cx="33" cy="17" r="3" fill="currentColor"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="55" y="35" class="logo-text dark-theme" font-size="24">Dramatize</text>
+</svg>

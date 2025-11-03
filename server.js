@@ -363,14 +363,177 @@ async function saveTodayAnalytics(data) {
     await fs.writeFile(getTodayFilePath(), JSON.stringify(data, null, 2));
 }
 
-// Analytics API Routes
+function getClientIP(req) {
+    return req.headers['x-forwarded-for'] || 
+           req.connection.remoteAddress || 
+           req.socket.remoteAddress ||
+           (req.connection.socket ? req.connection.socket.remoteAddress : null);
+}
+
+async function getLocationFromIP(ip) {
+    try {
+        const geo = geoip.lookup(ip);
+        return {
+            country: geo?.country || 'Unknown',
+            city: geo?.city || 'Unknown',
+            region: geo?.region || 'Unknown'
+        };
+    } catch (error) {
+        return { country: 'Unknown', city: 'Unknown', region: 'Unknown' };
+    }
+}
+
+function updateAnalyticsSummary(data) {
+    const uniqueUsers = new Set();
+    const sessionDurations = [];
+    
+    Object.values(data.sessions).forEach(session => {
+        uniqueUsers.add(session.userId);
+        if (session.duration > 0) {
+            sessionDurations.push(session.duration);
+        }
+    });
+    
+    const avgSessionDuration = sessionDurations.length > 0 
+        ? sessionDurations.reduce((a, b) => a + b, 0) / sessionDurations.length 
+        : 0;
+    
+    data.summary = {
+        totalPageViews: data.pageViews.length,
+        uniqueVisitors: uniqueUsers.size,
+        totalVideoPlays: data.videoEvents.filter(e => e.eventType === 'play').length,
+        totalSearches: data.searchQueries.length,
+        avgSessionDuration: Math.round(avgSessionDuration / 1000),
+        totalFavorites: data.favorites.length,
+        totalContentClicks: data.contentClicks.length
+    };
+}
+
+function getHourlyBreakdown(pageViews) {
+    const hours = Array(24).fill(0);
+    pageViews.forEach(view => {
+        const hour = new Date(view.timestamp).getHours();
+        hours[hour]++;
+    });
+    return hours;
+}
+
+function getTopContent(videoEvents, contentClicks) {
+    const contentStats = {};
+    
+    videoEvents.forEach(event => {
+        if (event.eventType === 'play') {
+            const key = event.videoId;
+            if (!contentStats[key]) {
+                contentStats[key] = { 
+                    id: key, 
+                    dramaId: event.videoId,
+                    title: event.videoTitle || 'Unknown Video', 
+                    plays: 0, 
+                    clicks: 0 
+                };
+            }
+            contentStats[key].plays++;
+            if (event.videoTitle && event.videoTitle !== 'Unknown Video') {
+                contentStats[key].title = event.videoTitle;
+            }
+        }
+    });
+    
+    contentClicks.forEach(click => {
+        const key = click.contentId;
+        if (!contentStats[key]) {
+            contentStats[key] = { 
+                id: key, 
+                dramaId: click.contentId,
+                title: click.contentTitle || 'Unknown', 
+                plays: 0, 
+                clicks: 0 
+            };
+        }
+        contentStats[key].clicks++;
+    });
+    
+    return Object.values(contentStats)
+        .sort((a, b) => (b.plays + b.clicks) - (a.plays + a.clicks))
+        .slice(0, 10);
+}
+
+function getTopSearchTerms(searchQueries) {
+    const terms = {};
+    searchQueries.forEach(search => {
+        const term = (search.query || '').toLowerCase();
+        if (term) {
+            terms[term] = (terms[term] || 0) + 1;
+        }
+    });
+    
+    return Object.entries(terms)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 10)
+        .map(([term, count]) => ({ term, count }));
+}
+
+function getDeviceBreakdown(pageViews) {
+    const devices = { mobile: 0, desktop: 0, tablet: 0 };
+    
+    pageViews.forEach(view => {
+        const ua = (view.userAgent || '').toLowerCase();
+        if (/mobile|android|iphone/.test(ua)) {
+            devices.mobile++;
+        } else if (/tablet|ipad/.test(ua)) {
+            devices.tablet++;
+        } else {
+            devices.desktop++;
+        }
+    });
+    
+    return devices;
+}
+
+function getActiveUsers(sessions) {
+    const now = Date.now();
+    const fiveMinutesAgo = now - (5 * 60 * 1000);
+    
+    return Object.values(sessions)
+        .filter(session => session.lastActivity > fiveMinutesAgo)
+        .length;
+}
+
 app.post('/api/analytics', async (req, res) => {
     try {
         const eventData = req.body;
+        eventData.clientIP = getClientIP(req);
         const todayData = await loadTodayAnalytics();
         
-        // Process different event types
+        if (eventData.type === 'pageview' || (eventData.type === 'batch' && eventData.pageViews)) {
+            const location = await getLocationFromIP(eventData.clientIP);
+            
+            if (eventData.type === 'pageview') {
+                eventData.country = location.country;
+                eventData.city = location.city;
+            } else if (eventData.pageViews) {
+                eventData.pageViews.forEach(pv => {
+                    pv.country = location.country;
+                    pv.city = location.city;
+                });
+            }
+        }
+        
         switch (eventData.type) {
+            case 'batch':
+                todayData.pageViews.push(...eventData.pageViews);
+                todayData.videoEvents.push(...eventData.videoEvents);
+                todayData.searchQueries.push(...eventData.searchQueries);
+                
+                todayData.sessions[eventData.sessionId] = {
+                    userId: eventData.userId,
+                    duration: eventData.sessionDuration,
+                    lastActivity: eventData.lastActivity,
+                    pageViewCount: eventData.pageViews.length,
+                    videoEventCount: eventData.videoEvents.length
+                };
+                break;
             case 'pageview':
                 todayData.pageViews.push(eventData);
                 break;
@@ -386,13 +549,12 @@ app.post('/api/analytics', async (req, res) => {
             case 'continue':
                 todayData.continues.push(eventData);
                 break;
+            case 'content_click':
+                todayData.contentClicks.push(eventData);
+                break;
         }
         
-        // Update summary
-        todayData.summary.totalPageViews = todayData.pageViews.length;
-        todayData.summary.totalVideoPlays = todayData.videoEvents.filter(e => e.eventType === 'play').length;
-        todayData.summary.totalSearches = todayData.searchQueries.length;
-        
+        updateAnalyticsSummary(todayData);
         await saveTodayAnalytics(todayData);
         res.json({ success: true });
     } catch (error) {
@@ -413,8 +575,19 @@ app.get('/api/analytics/today', async (req, res) => {
 app.get('/api/analytics/dashboard', async (req, res) => {
     try {
         const data = await loadTodayAnalytics();
-        res.json(data);
+        
+        const dashboard = {
+            summary: data.summary,
+            hourlyPageViews: getHourlyBreakdown(data.pageViews),
+            topContent: getTopContent(data.videoEvents, data.contentClicks),
+            searchTerms: getTopSearchTerms(data.searchQueries),
+            deviceTypes: getDeviceBreakdown(data.pageViews),
+            realtimeUsers: getActiveUsers(data.sessions)
+        };
+        
+        res.json(dashboard);
     } catch (error) {
+        console.error('Error fetching dashboard data:', error);
         res.status(500).json({ error: 'Failed to fetch dashboard data' });
     }
 });

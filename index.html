@@ -3180,6 +3180,9 @@
                     videoPlayer.src = finalUrl;
                     videoPlayer.load();
                     
+                    videoPlayer.dataset.videoId = currentDrama.id;
+                    videoPlayer.dataset.videoTitle = `${currentDrama.title} - ${episode.title || 'Episode ' + episodeNumber}`;
+                    
                     player = new Plyr(videoPlayer, {
                         controls: [
                             'play-large', 
@@ -3798,6 +3801,15 @@ function goToSlide(slideIndex) {
             setupEventListeners();
             checkLoginStatus();
             
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoId = urlParams.get('video');
+            if (videoId) {
+                setTimeout(() => {
+                    openVideoPlayerEnhanced(videoId, 1);
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 500);
+            }
+            
             // Initialize PWA functionality after DOM is ready
             initializePWA();
             
@@ -4197,6 +4209,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Load drama data -->
 <script src="data.js"></script>
+
+<script src="analytics.js"></script>
 
 </body>
 </html>

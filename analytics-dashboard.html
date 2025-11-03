@@ -343,15 +343,29 @@
         }
 
         function updateTables(data) {
-            // Top Content
             const topContentEl = document.getElementById('topContent');
             if (data.topContent && data.topContent.length > 0) {
                 topContentEl.innerHTML = data.topContent.map(item => 
-                    `<div class="table-row">
-                        <span>${item.title}</span>
-                        <span>${item.plays + item.clicks} views</span>
+                    `<div class="table-row content-link" data-drama-id="${item.dramaId || item.id}" style="cursor: pointer; transition: background 0.2s;" title="Click to open video">
+                        <span>🎬 ${item.title}</span>
+                        <span style="color: #667eea; font-weight: bold;">${item.plays + item.clicks} views</span>
                     </div>`
                 ).join('');
+                
+                document.querySelectorAll('.content-link').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const dramaId = el.dataset.dramaId;
+                        window.open(`/?video=${dramaId}`, '_blank');
+                    });
+                    
+                    el.addEventListener('mouseenter', (e) => {
+                        e.target.style.background = '#f0f0ff';
+                    });
+                    
+                    el.addEventListener('mouseleave', (e) => {
+                        e.target.style.background = '';
+                    });
+                });
             } else {
                 topContentEl.innerHTML = '<div class="table-row"><span>No data available</span></div>';
             }

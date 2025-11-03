@@ -3,7 +3,7 @@
 
 class DramatizeAnalytics {
     constructor(config = {}) {
-        this.apiEndpoint = config.apiEndpoint || 'http://localhost:3002/api/analytics';
+        this.apiEndpoint = config.apiEndpoint || '/api/analytics';
         this.sessionId = this.generateSessionId();
         this.userId = this.getUserId();
         this.startTime = Date.now();
@@ -163,7 +163,6 @@ class DramatizeAnalytics {
             }
         }, true);
 
-        // Track search events
         document.addEventListener('submit', (e) => {
             const form = e.target;
             const searchInput = form.querySelector('input[type="search"], input[name="search"], .search-input');
@@ -172,7 +171,24 @@ class DramatizeAnalytics {
             }
         });
 
-        // Track clicks on content
+        const searchInputElement = document.getElementById('searchInput');
+        if (searchInputElement) {
+            let searchTimeout;
+            searchInputElement.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.trim();
+                if (searchTerm.length >= 2) {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        const dramaCards = document.querySelectorAll('.drama-card');
+                        const visibleCards = Array.from(dramaCards).filter(card => 
+                            card.style.display !== 'none'
+                        ).length;
+                        this.trackSearch(searchTerm, visibleCards);
+                    }, 1000);
+                }
+            });
+        }
+
         document.addEventListener('click', (e) => {
             const target = e.target.closest('[data-content-id]');
             if (target) {

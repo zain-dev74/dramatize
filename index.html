@@ -1919,6 +1919,136 @@
             border-top: 8px solid rgba(0, 0, 0, 0.95);
         }
 
+        .ad-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .ad-modal.show {
+            display: flex;
+        }
+
+        .ad-container {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .ad-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .ad-close-btn:hover {
+            background: #ff5582;
+            transform: scale(1.1);
+        }
+
+        .ad-content {
+            margin-top: 20px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .ad-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: var(--text-secondary);
+        }
+
+        .ad-loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .ad-loading-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .ad-container {
+                width: 95%;
+                max-width: 100%;
+                padding: 15px;
+                border-radius: 12px;
+            }
+
+            .ad-close-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1.1rem;
+                top: 8px;
+                right: 8px;
+            }
+
+            .ad-content {
+                min-height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .ad-container {
+                width: 96%;
+                padding: 12px;
+                border-radius: 10px;
+            }
+
+            .ad-close-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+
+            .ad-content {
+                min-height: 180px;
+                margin-top: 15px;
+            }
+        }
+
         /* Additional mobile optimizations */
 @media (max-width: 360px) {
     .drama-grid {
@@ -1966,6 +2096,20 @@
                     <i class="fab fa-facebook-messenger"></i>
                     Messenger
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="ad-modal" id="adModal">
+        <div class="ad-container">
+            <button class="ad-close-btn" onclick="closeAdModal()" aria-label="Close advertisement">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="ad-content" id="adContent">
+                <div class="ad-loading">
+                    <div class="ad-loading-spinner"></div>
+                    <p class="ad-loading-text">Loading advertisement...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -3776,11 +3920,100 @@ function goToSlide(slideIndex) {
             document.getElementById('chatModal').style.display = 'none';
         }
 
-        // Close modal when clicking outside
+        let adPopupInterval = null;
+
+        function openAdModal() {
+            const adModal = document.getElementById('adModal');
+            if (adModal) {
+                adModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeAdModal() {
+            const adModal = document.getElementById('adModal');
+            if (adModal) {
+                adModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function getRandomInterval() {
+            return Math.floor(Math.random() * (25000 - 20000 + 1)) + 20000;
+        }
+
+        function scheduleNextAdPopup() {
+            if (adPopupInterval) {
+                clearTimeout(adPopupInterval);
+            }
+            
+            const interval = getRandomInterval();
+            console.log(`Next ad popup in ${interval / 1000} seconds`);
+            
+            adPopupInterval = setTimeout(() => {
+                openAdModal();
+                scheduleNextAdPopup();
+            }, interval);
+        }
+
+        function startAdPopupCycle() {
+            setTimeout(() => {
+                openAdModal();
+                scheduleNextAdPopup();
+            }, 5000);
+        }
+
+        function initializeAdContent() {
+            const adContent = document.getElementById('adContent');
+            if (adContent && window.innerWidth) {
+                setTimeout(() => {
+                    const loadingDiv = adContent.querySelector('.ad-loading');
+                    if (loadingDiv && adContent.children.length <= 2) {
+                        const hasVisibleAd = Array.from(adContent.children).some(child => 
+                            !child.classList.contains('ad-loading') && 
+                            child.offsetHeight > 0
+                        );
+                        
+                        if (!hasVisibleAd) {
+                            adContent.innerHTML = `
+                                <div class="ad-loading">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">📢</div>
+                                    <p class="ad-loading-text">Support Us by Viewing Ads</p>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 10px; text-align: center; max-width: 300px;">
+                                        Ads help us keep Dramatize free and bring you more content. Thank you for your support!
+                                    </p>
+                                    <button onclick="closeAdModal()" style="
+                                        background: var(--accent-color);
+                                        color: white;
+                                        border: none;
+                                        padding: 12px 25px;
+                                        border-radius: 25px;
+                                        cursor: pointer;
+                                        margin-top: 20px;
+                                        font-weight: 500;
+                                        transition: all 0.3s ease;
+                                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Got it!</button>
+                                </div>
+                            `;
+                        } else {
+                            if (loadingDiv) {
+                                loadingDiv.style.display = 'none';
+                            }
+                        }
+                    }
+                }, 4000);
+            }
+        }
+
         document.addEventListener('click', function(event) {
             const chatModal = document.getElementById('chatModal');
             if (event.target === chatModal) {
                 closeChatModal();
+            }
+            
+            const adModal = document.getElementById('adModal');
+            if (event.target === adModal) {
+                closeAdModal();
             }
         });
 
@@ -3810,8 +4043,11 @@ function goToSlide(slideIndex) {
                 }, 500);
             }
             
-            // Initialize PWA functionality after DOM is ready
             initializePWA();
+            
+            initializeAdContent();
+            
+            startAdPopupCycle();
             
             console.log('Initialization complete');
         });
@@ -4211,6 +4447,52 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="data.js"></script>
 
 <script src="analytics.js"></script>
+
+<script>
+window.addEventListener('load', function() {
+    const adScript = document.createElement('script');
+    adScript.type = 'text/javascript';
+    adScript.src = '//pl28018271.effectivegatecpm.com/ed/a1/4b/eda14b52c7cef31f49b6ea03e76c548d.js';
+    adScript.async = true;
+    
+    adScript.onload = function() {
+        console.log('Adsterra script loaded successfully');
+        const adContent = document.getElementById('adContent');
+        if (adContent) {
+            const loadingDiv = adContent.querySelector('.ad-loading');
+            if (loadingDiv) {
+                loadingDiv.querySelector('.ad-loading-text').textContent = 'Advertisement ready';
+            }
+        }
+    };
+    
+    adScript.onerror = function() {
+        console.log('Adsterra script failed to load');
+        const adContent = document.getElementById('adContent');
+        if (adContent) {
+            adContent.innerHTML = `
+                <div class="ad-loading">
+                    <p class="ad-loading-text">Advertisement not available</p>
+                    <button onclick="closeAdModal()" style="
+                        background: var(--accent-color);
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 20px;
+                        cursor: pointer;
+                        margin-top: 10px;
+                    ">Close</button>
+                </div>
+            `;
+        }
+    };
+    
+    const adContentDiv = document.getElementById('adContent');
+    if (adContentDiv) {
+        adContentDiv.appendChild(adScript);
+    }
+});
+</script>
 
 </body>
 </html>
